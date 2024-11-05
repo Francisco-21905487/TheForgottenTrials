@@ -12,7 +12,7 @@ ARoom2_Actor_BigPaper::ARoom2_Actor_BigPaper()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-    TextRender = nullptr;
+    textRender = nullptr;
 }
 
 // Called when the game starts or when spawned
@@ -20,9 +20,9 @@ void ARoom2_Actor_BigPaper::BeginPlay()
 {
 	Super::BeginPlay();
 	
-    TextRender = FindComponentByClass<UTextRenderComponent>();
+    textRender = FindComponentByClass<UTextRenderComponent>();
 
-	if (TextRender)
+	if (textRender)
 	{
 		GenerateRandomNumbersAndDisplay();
 	}
@@ -45,14 +45,14 @@ void ARoom2_Actor_BigPaper::GenerateRandomNumbersAndDisplay()
         for (int32 j = 0; j < 4; j++)
         {
             // Generate a random number between 0 and 9
-            RandomNumberArray[i][j] = FMath::RandRange(0, 9);
+            randomNumberArray[i][j] = FMath::RandRange(0, 9);
 
-            DisplayText += FString::FromInt(RandomNumberArray[i][j]) + TEXT("\t");
+            DisplayText += FString::FromInt(randomNumberArray[i][j]) + TEXT("\t");
         }
         DisplayText += TEXT("\n");
     }
 
-    TextRender->SetText(FText::FromString(DisplayText));
+    textRender->SetText(FText::FromString(DisplayText));
 }
 
 void ARoom2_Actor_BigPaper::ResetCode()
@@ -62,26 +62,26 @@ void ARoom2_Actor_BigPaper::ResetCode()
 
 FString ARoom2_Actor_BigPaper::GetCorrectCode()
 {
-	FString CorrectCode;
-	int32 CorrectCodeArray[4];
+	FString correctCode;
+	int32 correctCodeArray[4];
 
-    if (BigPaperID == 1) {
+    if (bigPaperID == 1) {
         // Correct sequence for Player 1
-        CorrectCodeArray[0] = RandomNumberArray[2][3];
-        CorrectCodeArray[1] = RandomNumberArray[3][0];
-        CorrectCodeArray[2] = RandomNumberArray[2][2];
-        CorrectCodeArray[3] = RandomNumberArray[0][1];
+		correctCodeArray[0] = randomNumberArray[2][3];
+		correctCodeArray[1] = randomNumberArray[3][0];
+		correctCodeArray[2] = randomNumberArray[2][2];
+		correctCodeArray[3] = randomNumberArray[0][1];
 	}
-	else if (BigPaperID == 2) {
+	else if (bigPaperID == 2) {
 		// Correct sequence for Player 2
-		CorrectCodeArray[0] = RandomNumberArray[1][1];
-		CorrectCodeArray[1] = RandomNumberArray[3][2];
-		CorrectCodeArray[2] = RandomNumberArray[0][3];
-		CorrectCodeArray[3] = RandomNumberArray[2][0];
+		correctCodeArray[0] = randomNumberArray[1][1];
+		correctCodeArray[1] = randomNumberArray[3][2];
+		correctCodeArray[2] = randomNumberArray[0][3];
+		correctCodeArray[3] = randomNumberArray[2][0];
 	}
 
 	// Convert the correct sequence to a string
-	CorrectCode = FString::FromInt(CorrectCodeArray[0]) + FString::FromInt(CorrectCodeArray[1]) + FString::FromInt(CorrectCodeArray[2]) + FString::FromInt(CorrectCodeArray[3]);
+	correctCode = FString::FromInt(correctCodeArray[0]) + FString::FromInt(correctCodeArray[1]) + FString::FromInt(correctCodeArray[2]) + FString::FromInt(correctCodeArray[3]);
 
-	return CorrectCode;
+	return correctCode;
 }

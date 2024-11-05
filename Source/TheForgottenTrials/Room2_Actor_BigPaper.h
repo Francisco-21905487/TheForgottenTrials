@@ -16,28 +16,24 @@ public:
 	// Sets default values for this actor's properties
 	ARoom2_Actor_BigPaper();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-
-public:
 	FString GetCorrectCode();
 
 	void ResetCode();
 
-protected:
-	int32 RandomNumberArray[4][4];
+private:
+	int32 randomNumberArray[4][4];
 
 	void GenerateRandomNumbersAndDisplay();
 
-	UTextRenderComponent* TextRender;
+	UTextRenderComponent* textRender;
 
-private:
 	UPROPERTY(EditAnywhere)
-	int BigPaperID;
+	int bigPaperID;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 };

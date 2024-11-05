@@ -9,12 +9,12 @@ ARoom2_Actor_Finaldoor::ARoom2_Actor_Finaldoor()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
-	RootComponent = DoorMesh;
+	doorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
+	RootComponent = doorMesh;
 
-	TargetZPosition = 0.0f;
-	MoveSpeed = 100.0f;
-	Opening = false;
+	targetZPosition = 0.0f;
+	moveSpeed = 100.0f;
+	opening = false;
 }
 
 // Called when the game starts or when spawned
@@ -22,7 +22,7 @@ void ARoom2_Actor_Finaldoor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	InitialPosition = GetActorLocation();
+	initialPosition = GetActorLocation();
 	
 }
 
@@ -31,18 +31,18 @@ void ARoom2_Actor_Finaldoor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime); 
     
-    FVector CurrentLocation = GetActorLocation();
+    FVector currentLocation = GetActorLocation();
 
-    if (Opening)
+    if (opening)
     {
         // Smoothly move the door down towards the target Z position
-        CurrentLocation.Z = FMath::FInterpTo(CurrentLocation.Z, TargetZPosition, DeltaTime, MoveSpeed);
-        SetActorLocation(CurrentLocation);
+        currentLocation.Z = FMath::FInterpTo(currentLocation.Z, targetZPosition, DeltaTime, moveSpeed);
+        SetActorLocation(currentLocation);
 
         // Stop opening when we reach the target position
-        if (FMath::IsNearlyEqual(CurrentLocation.Z, TargetZPosition, 1.0f))
+        if (FMath::IsNearlyEqual(currentLocation.Z, targetZPosition, 1.0f))
         {
-            Opening = false;
+            opening = false;
         }
     }
 
@@ -50,5 +50,5 @@ void ARoom2_Actor_Finaldoor::Tick(float DeltaTime)
 
 void ARoom2_Actor_Finaldoor::OpenDoor()
 {
-    Opening = true;
+    opening = true;
 }

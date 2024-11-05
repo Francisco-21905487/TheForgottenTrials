@@ -13,19 +13,19 @@ ARoom1_Actor_PressurePlate::ARoom1_Actor_PressurePlate()
 	PrimaryActorTick.bCanEverTick = true;
 
     // Create and set up the trigger box
-    TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
-    RootComponent = TriggerBox;
-    TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-    TriggerBox->SetCollisionObjectType(ECollisionChannel::ECC_WorldStatic);
-    TriggerBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-    TriggerBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+    triggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
+    RootComponent = triggerBox;
+    triggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+    triggerBox->SetCollisionObjectType(ECollisionChannel::ECC_WorldStatic);
+    triggerBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+    triggerBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 
     // Bind overlap events
-    TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ARoom1_Actor_PressurePlate::OnOverlapBegin);
+    triggerBox->OnComponentBeginOverlap.AddDynamic(this, &ARoom1_Actor_PressurePlate::OnOverlapBegin);
 
     // Create and set up the mesh for the pressure plate
-    PressurePlateMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PressurePlateMesh"));
-    PressurePlateMesh->SetupAttachment(RootComponent);
+    pressurePlateMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PressurePlateMesh"));
+    pressurePlateMesh->SetupAttachment(RootComponent);
 
 }
 
@@ -35,11 +35,11 @@ void ARoom1_Actor_PressurePlate::BeginPlay()
 	Super::BeginPlay();
 
     // Get the initial location of the pressure plate
-    InitialLocation = PressurePlateMesh->GetComponentLocation();
+    initialLocation = pressurePlateMesh->GetComponentLocation();
 
     // Calculate the target lowered position
-    TargetLocation = InitialLocation;
-    TargetLocation.Z -= LoweredHeight;
+    targetLocation = initialLocation;
+    targetLocation.Z -= loweredHeight;
 	
 }
 
@@ -49,16 +49,16 @@ void ARoom1_Actor_PressurePlate::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
     // If the plate is lowering, move it down smoothly
-    if (bIsLowering)
+    if (lowering)
     {
-        FVector CurrentLocation = PressurePlateMesh->GetComponentLocation();
-        FVector NewLocation = FMath::VInterpTo(CurrentLocation, TargetLocation, DeltaTime, LoweringSpeed);
-        PressurePlateMesh->SetWorldLocation(NewLocation);
+        FVector CurrentLocation = pressurePlateMesh->GetComponentLocation();
+        FVector NewLocation = FMath::VInterpTo(CurrentLocation, targetLocation, DeltaTime, loweringSpeed);
+        pressurePlateMesh->SetWorldLocation(NewLocation);
 
         // Stop lowering when the plate reaches the target
-        if (FVector::Dist(CurrentLocation, TargetLocation) <= KINDA_SMALL_NUMBER)
+        if (FVector::Dist(CurrentLocation, targetLocation) <= KINDA_SMALL_NUMBER)
         {
-            bIsLowering = false;
+            lowering = false;
         }
     }
 }
@@ -68,11 +68,10 @@ void ARoom1_Actor_PressurePlate::OnOverlapBegin(UPrimitiveComponent* OverlappedC
 {
     if (OtherActor && (OtherActor != this))
     {
-        bIsLowering = true;  // Start lowering the plate
-        bIsRaising = false;  // Stop raising if the plate was going up
-        if (TargetDoor)
+        lowering = true;  // Start lowering the plate
+        if (targetDoor)
         {
-            TargetDoor->OpenDoor();  // Open the door
+            targetDoor->OpenDoor();  // Open the door
         }
     }
 }

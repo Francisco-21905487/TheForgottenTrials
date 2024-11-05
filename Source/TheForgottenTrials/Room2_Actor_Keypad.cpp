@@ -19,17 +19,17 @@ ARoom2_Actor_Keypad::ARoom2_Actor_Keypad()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Initialize the ProximityBox
-	ProximityBox = CreateDefaultSubobject<UBoxComponent>(TEXT("ProximityBox"));
-	ProximityBox->SetupAttachment(RootComponent);
-	ProximityBox->SetBoxExtent(FVector(100.f, 100.f, 100.f));
-	ProximityBox->OnComponentBeginOverlap.AddDynamic(this, &ARoom2_Actor_Keypad::OnOverlapBegin);
-	ProximityBox->OnComponentEndOverlap.AddDynamic(this, &ARoom2_Actor_Keypad::OnOverlapEnd);
+	proximityBox = CreateDefaultSubobject<UBoxComponent>(TEXT("ProximityBox"));
+	proximityBox->SetupAttachment(RootComponent);
+	proximityBox->SetBoxExtent(FVector(100.f, 100.f, 100.f));
+	proximityBox->OnComponentBeginOverlap.AddDynamic(this, &ARoom2_Actor_Keypad::OnOverlapBegin);
+	proximityBox->OnComponentEndOverlap.AddDynamic(this, &ARoom2_Actor_Keypad::OnOverlapEnd);
 
 	// Initialize the KeypadMesh
-	KeypadMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("KeypadMesh"));
-	KeypadMesh->SetupAttachment(RootComponent);
+	keypadMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("KeypadMesh"));
+	keypadMesh->SetupAttachment(RootComponent);
 
-	PlayerInRange = false;
+	playerInRange = false;
 }
 
 // Called when the game starts or when spawned
@@ -47,22 +47,22 @@ void ARoom2_Actor_Keypad::Tick(float DeltaTime)
 
 void ARoom2_Actor_Keypad::Interact()
 {
-	if (PlayerInRange)
+	if (playerInRange)
 	{
 		// Get the player controller
 		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		if (PlayerController && KeypadWidgetClass)
+		if (PlayerController && keypadWidgetClass)
 		{
 			// Create the widget
-			KeypadWidget = CreateWidget<UUserWidget>(PlayerController, KeypadWidgetClass);
-			if (KeypadWidget)
+			keypadWidget = CreateWidget<UUserWidget>(PlayerController, keypadWidgetClass);
+			if (keypadWidget)
 			{
 				// Add the widget to the viewport
-				KeypadWidget->AddToViewport();
+				keypadWidget->AddToViewport();
 
 				// Set input mode to game and UI
 				FInputModeGameAndUI InputMode;
-				InputMode.SetWidgetToFocus(KeypadWidget->TakeWidget());
+				InputMode.SetWidgetToFocus(keypadWidget->TakeWidget());
 				PlayerController->SetInputMode(InputMode);
 
 				// Show the mouse cursor
@@ -82,45 +82,45 @@ void ARoom2_Actor_Keypad::Interact()
 void ARoom2_Actor_Keypad::CloseWidget()
 {
 	// Remove the widget from the viewport
-	if (KeypadWidget)
+	if (keypadWidget)
 	{
-		KeypadWidget->RemoveFromViewport();
-		KeypadWidget = nullptr;
+		keypadWidget->RemoveFromViewport();
+		keypadWidget = nullptr;
 	}
 
 	// Get the player controller
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	if (PlayerController)
+	APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (playerController)
 	{
 		// Set input mode back to game only
 		FInputModeGameOnly InputMode;
-		PlayerController->SetInputMode(InputMode);
+		playerController->SetInputMode(InputMode);
 
 		// Hide the mouse cursor
-		PlayerController->bShowMouseCursor = false;
+		playerController->bShowMouseCursor = false;
 
 		// Re-enable input for the player character
 		ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 		if (PlayerCharacter)
 		{
-			PlayerCharacter->EnableInput(PlayerController);
+			PlayerCharacter->EnableInput(playerController);
 		}
 	}
 }
 
 bool ARoom2_Actor_Keypad::CheckCode(FString KeypadCode)
 {
-	FString CorrectCode = TargetBigPaper->GetCorrectCode();
+	FString CorrectCode = targetBigPaper->GetCorrectCode();
 
 	// Compare the keypad code with the correct code
 	if (KeypadCode == CorrectCode)
 	{
-		TargetFinalDoor->OpenDoor();
+		targetFinalDoor->OpenDoor();
 		return true;
 	}
 	else
 	{
-		TargetBigPaper->ResetCode();
+		targetBigPaper->ResetCode();
 		return false;
 	}
 }
@@ -129,7 +129,7 @@ void ARoom2_Actor_Keypad::OnOverlapBegin(class UPrimitiveComponent* OverlappedCo
 {
 	if (OtherActor && (OtherActor != this))
 	{
-		PlayerInRange = true;
+		playerInRange = true;
 	}
 }
 
@@ -137,6 +137,6 @@ void ARoom2_Actor_Keypad::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp
 {
 	if (OtherActor && (OtherActor != this))
 	{
-		PlayerInRange = false;
+		playerInRange = false;
 	}
 }

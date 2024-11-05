@@ -15,29 +15,26 @@ public:
 	// Sets default values for this actor's properties
 	ARoom2_Actor_Finaldoor();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-public:
 	UFUNCTION()
 	void OpenDoor();
 
-protected:
-	UPROPERTY(VisibleAnywhere, Category = "Components")
-	UStaticMeshComponent* DoorMesh;
-
-	UPROPERTY(EditAnywhere, Category = "Movement")
-	float TargetZPosition;
-
-	UPROPERTY(EditAnywhere, Category = "Movement")
-	float MoveSpeed;
-
 private:
-	bool Opening;
-	FVector InitialPosition;
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UStaticMeshComponent* doorMesh;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float targetZPosition;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float moveSpeed;
+
+	bool opening;
+	FVector initialPosition;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 };
