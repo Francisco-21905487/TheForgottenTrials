@@ -2,6 +2,7 @@
 
 #include "TheForgottenTrialsCharacter.h"
 #include "TheForgottenTrialsProjectile.h"
+#include "Room2_Actor_Keypad.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -60,6 +61,9 @@ void ATheForgottenTrialsCharacter::SetupPlayerInputComponent(UInputComponent* Pl
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATheForgottenTrialsCharacter::Look);
+		
+		// Interact
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ATheForgottenTrialsCharacter::Interact);
 	}
 	else
 	{
@@ -91,5 +95,29 @@ void ATheForgottenTrialsCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void ATheForgottenTrialsCharacter::Interact()
+{
+	// Perform a line trace or overlap check to find the keypad actor
+	FHitResult HitResult;
+	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
+	FVector End = Start + (FirstPersonCameraComponent->GetForwardVector() * 200.0f); // Adjust the range as needed
+
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params))
+	{
+		ARoom2_Actor_Keypad* KeypadActor = Cast<ARoom2_Actor_Keypad>(HitResult.GetActor());
+		if (KeypadActor)
+		{
+			KeypadActor->Interact();
+		}
+		else
+		{
+			UE_LOG(LogTemplateCharacter, Warning, TEXT("No keypad actor found to interact with."));
+		}
 	}
 }
