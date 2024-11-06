@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Room1_Actor_MazeDoors.generated.h"
+#include "Room2_Actor_Finaldoor.generated.h"
 
 UCLASS()
-class THEFORGOTTENTRIALS_API ARoom1_Actor_MazeDoors : public AActor
+class THEFORGOTTENTRIALS_API ARoom2_Actor_Finaldoor : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ARoom1_Actor_MazeDoors();
+	ARoom2_Actor_Finaldoor();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

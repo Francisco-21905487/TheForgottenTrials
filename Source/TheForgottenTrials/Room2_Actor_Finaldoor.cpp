@@ -1,11 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Room1_Actor_MazeDoors.h"
-#include "Components/StaticMeshComponent.h"
+#include "Room2_Actor_Finaldoor.h"
 
 // Sets default values
-ARoom1_Actor_MazeDoors::ARoom1_Actor_MazeDoors()
+ARoom2_Actor_Finaldoor::ARoom2_Actor_Finaldoor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -13,25 +12,25 @@ ARoom1_Actor_MazeDoors::ARoom1_Actor_MazeDoors()
 	doorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
 	RootComponent = doorMesh;
 
-    targetZPosition = 0.0f;
-    moveSpeed = 100.0f;
-    opening = false;
-
+	targetZPosition = 0.0f;
+	moveSpeed = 100.0f;
+	opening = false;
 }
 
 // Called when the game starts or when spawned
-void ARoom1_Actor_MazeDoors::BeginPlay()
+void ARoom2_Actor_Finaldoor::BeginPlay()
 {
 	Super::BeginPlay();
 
-    initialPosition = GetActorLocation();
+	initialPosition = GetActorLocation();
+	
 }
 
 // Called every frame
-void ARoom1_Actor_MazeDoors::Tick(float DeltaTime)
+void ARoom2_Actor_Finaldoor::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-
+	Super::Tick(DeltaTime); 
+    
     FVector currentLocation = GetActorLocation();
 
     if (opening)
@@ -46,9 +45,10 @@ void ARoom1_Actor_MazeDoors::Tick(float DeltaTime)
             opening = false;
         }
     }
+
 }
 
-void ARoom1_Actor_MazeDoors::OpenDoor()
+void ARoom2_Actor_Finaldoor::OpenDoor()
 {
     opening = true;
 }

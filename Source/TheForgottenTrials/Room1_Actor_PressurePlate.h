@@ -17,45 +17,34 @@ public:
 	// Sets default values for this actor's properties
 	ARoom1_Actor_PressurePlate();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    // Called every frame
+    virtual void Tick(float DeltaTime) override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-protected:
-    // Trigger Volume to detect overlap
+private:
     UPROPERTY(VisibleAnywhere, Category = "Components")
-    class UBoxComponent* TriggerBox;
+    class UBoxComponent* triggerBox;
 
-    // Mesh for the pressure plate
     UPROPERTY(VisibleAnywhere, Category = "Components")
-    UStaticMeshComponent* PressurePlateMesh;
+    UStaticMeshComponent* pressurePlateMesh;
 
-    // Reference to the door
     UPROPERTY(EditAnywhere, Category = "Door")
-    ARoom1_Actor_MazeDoors* TargetDoor;
+    ARoom1_Actor_MazeDoors* targetDoor;
 
-    // The target position to lower the plate to
     UPROPERTY(EditAnywhere, Category = "Plate Movement")
-    float LoweredHeight = 10.0f;
+    float loweredHeight = 10.0f;
 
-    // The speed at which the plate lowers/raises
     UPROPERTY(EditAnywhere, Category = "Plate Movement")
-    float LoweringSpeed = 50.0f;
+    float loweringSpeed = 50.0f;
 
-    // Function to handle stepping on the pressure plate
     UFUNCTION()
     void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-private:
-    // Store the initial and target positions
-    FVector InitialLocation;
-    FVector TargetLocation;
+    FVector initialLocation;
+    FVector targetLocation;
 
-    // Flag to track if the plate should be lowering or raising
-    bool bIsLowering = false;
-    bool bIsRaising = false;
+    bool lowering = false;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 };
