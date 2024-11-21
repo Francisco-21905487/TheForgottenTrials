@@ -64,6 +64,8 @@ void ATheForgottenTrialsCharacter::SetupPlayerInputComponent(UInputComponent* Pl
 		
 		// Interact
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ATheForgottenTrialsCharacter::Interact);
+
+
 	}
 	else
 	{
