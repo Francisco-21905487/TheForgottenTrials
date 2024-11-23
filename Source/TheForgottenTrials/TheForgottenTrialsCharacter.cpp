@@ -112,14 +112,14 @@ void ATheForgottenTrialsCharacter::Interact()
 
 	if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params))
 	{
-		ARoom2_Actor_Keypad* KeypadActor = Cast<ARoom2_Actor_Keypad>(HitResult.GetActor());
-		if (KeypadActor)
+		IInteractable* InteractableActor = Cast<IInteractable>(HitResult.GetActor());
+		if (InteractableActor)
 		{
-			KeypadActor->Interact();
+			InteractableActor->Interact();
 		}
 		else
 		{
-			UE_LOG(LogTemplateCharacter, Warning, TEXT("No keypad actor found to interact with."));
+			UE_LOG(LogTemplateCharacter, Warning, TEXT("No interactable actor found."));
 		}
 	}
 }
