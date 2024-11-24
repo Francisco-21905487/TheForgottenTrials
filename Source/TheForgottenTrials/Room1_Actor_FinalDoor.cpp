@@ -2,6 +2,8 @@
 
 
 #include "Room1_Actor_FinalDoor.h"
+#include "Components/BoxComponent.h"
+#include "GameFramework/Character.h"
 
 // Sets default values
 ARoom1_Actor_FinalDoor::ARoom1_Actor_FinalDoor()
@@ -9,11 +11,18 @@ ARoom1_Actor_FinalDoor::ARoom1_Actor_FinalDoor()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	DoorFrame = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorFrame"));
-	DoorFrame->SetupAttachment(RootComponent);
+	doorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
+	RootComponent = doorMesh;
 
-	Door = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Door"));
-	Door->SetupAttachment(DoorFrame);
+	DoorTriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("DoorTriggerBox"));
+	DoorTriggerBox->SetupAttachment(RootComponent);
+	DoorTriggerBox->SetBoxExtent(FVector(100.f, 100.f, 100.f));
+	DoorTriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ARoom1_Actor_FinalDoor::OnTriggerBeginOverlap);
+	DoorTriggerBox->OnComponentEndOverlap.AddDynamic(this, &ARoom1_Actor_FinalDoor::OnTriggerEndOverlap);
+
+	targetRotation = FRotator(0.0f, 90.0f, 0.0f);
+	rotationSpeed = 2.0f;
+	rotating = false;
 }
 
 // Called when the game starts or when spawned
@@ -21,6 +30,7 @@ void ARoom1_Actor_FinalDoor::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	initialRotation = GetActorRotation();
 }
 
 // Called every frame
@@ -28,10 +38,49 @@ void ARoom1_Actor_FinalDoor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (rotating)
+	{
+		FRotator currentRotation = GetActorRotation();
+		FRotator newRotation = FMath::RInterpTo(currentRotation, targetRotation, DeltaTime, rotationSpeed);
+		SetActorRotation(newRotation);
+
+		if (currentRotation.Equals(targetRotation, 1.0f))
+		{
+			rotating = false;
+		}
+	}
 }
 
-void ARoom1_Actor_FinalDoor::OnInteract() 
+void ARoom1_Actor_FinalDoor::OpenDoor()
 {
-	UE_LOG(LogTemp, Display, TEXT("Interacted with door"));
+	rotating = true;
+	targetRotation = initialRotation + FRotator(0.0f, 90.0f, 0.0f);
+}
+
+void ARoom1_Actor_FinalDoor::CloseDoor()
+{
+	if (rotating) return;
+
+	rotating = true;
+	targetRotation = initialRotation;
+}
+
+void ARoom1_Actor_FinalDoor::OnTriggerBeginOverlap(UPrimitiveComponent * OverlappedComp, AActor * OtherActor,UPrimitiveComponent * OtherComp, int32 OtherBodyIndex,bool bFromSweep, const FHitResult & SweepResult)
+{
+	if (OtherActor && OtherActor->IsA(ACharacter::StaticClass()))
+	{
+		
+	}
+}
+
+
+	// Called when another actor exits the trigger box
+void ARoom1_Actor_FinalDoor::OnTriggerEndOverlap(UPrimitiveComponent * OverlappedComp, AActor * OtherActor,UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor && OtherActor->IsA(ACharacter::StaticClass()))
+	{
+		CloseDoor();
+		
+	}
 }
 

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/BoxComponent.h"
 #include "Room1_Actor_FinalDoor.generated.h"
 
 UCLASS()
@@ -15,21 +16,38 @@ public:
 	// Sets default values for this actor's properties
 	ARoom1_Actor_FinalDoor();
 
+	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION()
+	void OpenDoor();
+
+	void CloseDoor();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	void OnInteract();
-
 private:
 
-	UPROPERTY(VisibleAnywhere, Category = "Mesh")
-	class UStaticMeshComponent* DoorFrame;
-	UPROPERTY(VisibleAnywhere, Category = "Mesh")
-	UStaticMeshComponent* Door;
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UStaticMeshComponent* doorMesh;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UBoxComponent* DoorTriggerBox;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	FRotator targetRotation;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float rotationSpeed;
+
+	FRotator initialRotation;
+	bool rotating;
+
+	UFUNCTION()
+	void OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnTriggerEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 };
