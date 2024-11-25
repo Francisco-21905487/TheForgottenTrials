@@ -20,15 +20,13 @@ public:
 	UFUNCTION(Exec)
 	void CompleteRoom2();
 
-	/*
 	//Room 3
-	UFUNCTION()
+	UFUNCTION(Exec)
 	void CompleteRoom3();
-	*/
 
 	/*
 	//Room 4
-	UFUNCTION()
+	UFUNCTION(Exec)
 	void CompleteRoom4();
 	*/
 };

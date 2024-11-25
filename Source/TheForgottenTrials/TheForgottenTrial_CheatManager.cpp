@@ -5,6 +5,7 @@
 #include "Room1_Actor_MazeDoors.h"
 #include "Room2_Actor_Keypad.h"
 #include "Room2_Actor_Bigpaper.h"
+#include "Room3_Actor_DoorsManager.h"
 #include "Kismet/GameplayStatics.h"
 
 void UTheForgottenTrial_CheatManager::CompleteRoom1()
@@ -40,13 +41,27 @@ void UTheForgottenTrial_CheatManager::CompleteRoom2()
 	}
 }
 
-/*
-//Missing code for CompleteRoom3 and CompleteRoom4
 void UTheForgottenTrial_CheatManager::CompleteRoom3()
 {
+	TArray<AActor*> foundDoorsManagerActors;
 
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARoom3_Actor_DoorsManager::StaticClass(), foundDoorsManagerActors);
+
+	for (AActor* actor : foundDoorsManagerActors)
+	{
+		ARoom3_Actor_DoorsManager* doorsManagerActor = Cast<ARoom3_Actor_DoorsManager>(actor);
+
+		//Open the door using the interact function to check if the door is correct.
+		for (int i = 0; i < 4; i++)
+		{
+			doorsManagerActor->correctDoors[i]->Interact();
+		}
+	}
 }
 
+
+/*
+* //Missing code for CompleteRoom4
 void UTheForgottenTrial_CheatManager::CompleteRoom4()
 {
 
