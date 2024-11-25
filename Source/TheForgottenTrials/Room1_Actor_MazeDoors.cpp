@@ -13,9 +13,9 @@ ARoom1_Actor_MazeDoors::ARoom1_Actor_MazeDoors()
 	doorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
 	RootComponent = doorMesh;
 
-    targetZPosition = 0.0f;
-    moveSpeed = 100.0f;
-    opening = false;
+    targetRotation = FRotator(0.0f, 90.0f, 0.0f); // Example: Rotate 90 degrees on the Yaw axis
+    rotationSpeed = 2.0f; // Adjust rotation speed as needed
+    rotating = false;
 
 }
 
@@ -24,7 +24,7 @@ void ARoom1_Actor_MazeDoors::BeginPlay()
 {
 	Super::BeginPlay();
 
-    initialPosition = GetActorLocation();
+    initialRotation = GetActorRotation();
 }
 
 // Called every frame
@@ -32,23 +32,27 @@ void ARoom1_Actor_MazeDoors::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-    FVector currentLocation = GetActorLocation();
+	if (rotating)
+	{
+		FRotator currentRotation = GetActorRotation();
+		FRotator newRotation = FMath::RInterpTo(currentRotation, targetRotation, DeltaTime, rotationSpeed);
+		SetActorRotation(newRotation);
 
-    if (opening)
-    {
-        // Smoothly move the door down towards the target Z position
-        currentLocation.Z = FMath::FInterpTo(currentLocation.Z, targetZPosition, DeltaTime, moveSpeed);
-        SetActorLocation(currentLocation);
-
-        // Stop opening when we reach the target position
-        if (FMath::IsNearlyEqual(currentLocation.Z, targetZPosition, 1.0f))
-        {
-            opening = false;
-        }
-    }
+		// Stop rotating when the target rotation is reached
+		if (currentRotation.Equals(targetRotation, 1.0f)) // Tolerance of 1 degree
+		{
+			rotating = false;
+		}
+	}
 }
 
 void ARoom1_Actor_MazeDoors::OpenDoor()
 {
-    opening = true;
+	rotating = true;
+
+	// Toggle between opening and closing
+	if (GetActorRotation().Equals(initialRotation, 1.0f))
+	{
+		targetRotation = initialRotation + FRotator(0.0f, 90.0f, 0.0f); // Open door
+	}
 }

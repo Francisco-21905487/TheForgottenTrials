@@ -2,6 +2,7 @@
 
 
 #include "Room2_Actor_Finaldoor.h"
+#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 ARoom2_Actor_Finaldoor::ARoom2_Actor_Finaldoor()
@@ -12,9 +13,9 @@ ARoom2_Actor_Finaldoor::ARoom2_Actor_Finaldoor()
 	doorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
 	RootComponent = doorMesh;
 
-	targetZPosition = 0.0f;
-	moveSpeed = 100.0f;
-	opening = false;
+    targetRotation = FRotator(0.0f, 90.0f, 0.0f); // Example: Rotate 90 degrees on the Yaw axis
+    rotationSpeed = 2.0f; // Adjust rotation speed as needed
+    rotating = false;
 }
 
 // Called when the game starts or when spawned
@@ -22,7 +23,7 @@ void ARoom2_Actor_Finaldoor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	initialPosition = GetActorLocation();
+    initialRotation = GetActorRotation();
 	
 }
 
@@ -33,22 +34,28 @@ void ARoom2_Actor_Finaldoor::Tick(float DeltaTime)
     
     FVector currentLocation = GetActorLocation();
 
-    if (opening)
-    {
-        // Smoothly move the door down towards the target Z position
-        currentLocation.Z = FMath::FInterpTo(currentLocation.Z, targetZPosition, DeltaTime, moveSpeed);
-        SetActorLocation(currentLocation);
+	if (rotating)
+	{
+		FRotator currentRotation = GetActorRotation();
+		FRotator newRotation = FMath::RInterpTo(currentRotation, targetRotation, DeltaTime, rotationSpeed);
+		SetActorRotation(newRotation);
 
-        // Stop opening when we reach the target position
-        if (FMath::IsNearlyEqual(currentLocation.Z, targetZPosition, 1.0f))
-        {
-            opening = false;
-        }
-    }
+		// Stop rotating when the target rotation is reached
+		if (currentRotation.Equals(targetRotation, 1.0f)) // Tolerance of 1 degree
+		{
+			rotating = false;
+		}
+	}
 
 }
 
 void ARoom2_Actor_Finaldoor::OpenDoor()
 {
-    opening = true;
+	rotating = true;
+
+	// Toggle between opening and closing
+	if (GetActorRotation().Equals(initialRotation, 1.0f))
+	{
+		targetRotation = initialRotation + FRotator(0.0f, 90.0f, 0.0f); // Open door
+	}
 }
