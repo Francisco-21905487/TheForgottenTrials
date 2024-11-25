@@ -4,6 +4,7 @@
 #include "TheForgottenTrialsProjectile.h"
 #include "Room2_Actor_Keypad.h"
 #include "Room1_Actor_Button.h"
+#include "Room4_VotingButton.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"

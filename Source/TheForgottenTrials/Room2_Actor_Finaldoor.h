@@ -26,13 +26,13 @@ private:
 	UStaticMeshComponent* doorMesh;
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
-	float targetZPosition;
+	FRotator targetRotation;
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
-	float moveSpeed;
+	float rotationSpeed;
 
-	bool opening;
-	FVector initialPosition;
+	FRotator initialRotation;
+	bool rotating;
 
 protected:
 	// Called when the game starts or when spawned
