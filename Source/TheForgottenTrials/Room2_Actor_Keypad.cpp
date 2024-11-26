@@ -84,7 +84,7 @@ void ARoom2_Actor_Keypad::CloseWidget()
 	// Remove the widget from the viewport
 	if (keypadWidget)
 	{
-		keypadWidget->RemoveFromViewport();
+		keypadWidget->RemoveFromParent();
 		keypadWidget = nullptr;
 	}
 

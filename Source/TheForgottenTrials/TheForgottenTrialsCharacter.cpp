@@ -13,6 +13,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "Engine/World.h"
+#include "DrawDebugHelpers.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -69,10 +71,6 @@ void ATheForgottenTrialsCharacter::SetupPlayerInputComponent(UInputComponent* Pl
 
 
 	}
-	else
-	{
-		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
-	}
 }
 
 
@@ -118,10 +116,6 @@ void ATheForgottenTrialsCharacter::Interact()
 		if (InteractableActor)
 		{
 			InteractableActor->Interact();
-		}
-		else
-		{
-			UE_LOG(LogTemplateCharacter, Warning, TEXT("No interactable actor found."));
 		}
 	}
 }

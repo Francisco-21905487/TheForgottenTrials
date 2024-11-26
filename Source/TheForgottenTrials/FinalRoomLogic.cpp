@@ -56,29 +56,29 @@ void AFinalRoomLogic::DetermineOutcome()
     {
         if (EthanDoor) EthanDoor->OpenDoor();
         if (IsabelDoor) IsabelDoor->OpenDoor();
-        UE_LOG(LogTemp, Warning, TEXT("Both live!"));
+        GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Both live!"));
     }
     else if (EthanVotes == 2)
     {
         if (EthanDoor)
         {
-            UE_LOG(LogTemp, Warning, TEXT("Calling OpenDoor() on EthanDoor."));
+            GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Calling OpenDoor() on EthanDoor."));
             EthanDoor->OpenDoor();
         }
         else
         {
-            UE_LOG(LogTemp, Error, TEXT("EthanDoor is null!"));
+            GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("EthanDoor is null!"));
         }
     }
     else if (IsabelVotes == 2)
     {
-        UE_LOG(LogTemp, Warning, TEXT("Isabel lives!"));
+        GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Isabel lives!"));
         if (IsabelDoor) IsabelDoor->OpenDoor();
-        UE_LOG(LogTemp, Warning, TEXT("Isabel lives!"));
+        GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Isabel lives!"));
     }
     else
     {
-        UE_LOG(LogTemp, Warning, TEXT("Both die! No doors open."));
+        GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Both die! No doors open."));
     }
 }
 

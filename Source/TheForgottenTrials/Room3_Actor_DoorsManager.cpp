@@ -63,7 +63,6 @@ void ARoom3_Actor_DoorsManager::ResetRoom3()
 	// Check if doors array is valid
 	if ((sizeof(doors) / sizeof(doors[0])) < 8)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Doors array does not have enough elements."));
 		return;
 	}
 
@@ -74,10 +73,6 @@ void ARoom3_Actor_DoorsManager::ResetRoom3()
 		{
 			doors[i]->correctDoor = false;
 			doors[i]->CloseDoor();
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Door %d is nullptr."), i);
 		}
 	}
 
