@@ -30,6 +30,7 @@ private:
 
 	UTextRenderComponent* textRender;
 
+	UPROPERTY(EditAnywhere)
 	int bigPaperID;
 
 protected:

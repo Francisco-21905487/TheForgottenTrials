@@ -17,6 +17,8 @@ ARoom3_Actor_Door::ARoom3_Actor_Door()
 void ARoom3_Actor_Door::BeginPlay()
 {
 	Super::BeginPlay();
+
+	initialRotation = GetActorRotation();
 	
 }
 
@@ -28,21 +30,21 @@ void ARoom3_Actor_Door::Tick(float DeltaTime)
 
 	if (opening)
 	{
-		MoveDoor(DeltaTime, targetZPosition);
+		MoveDoor(DeltaTime, targetRotation);
 	}
 
 }
 
-void ARoom3_Actor_Door::MoveDoor(float DeltaTime, float targetPosition)
+void ARoom3_Actor_Door::MoveDoor(float DeltaTime, FRotator targetPosition)
 {
 	FVector currentLocation = GetActorLocation();
 
-	// Smoothly move the door down towards the target Z position
-	currentLocation.Z = FMath::FInterpTo(currentLocation.Z, targetPosition, DeltaTime, moveSpeed);
-	SetActorLocation(currentLocation);
+	FRotator currentRotation = GetActorRotation();
+	FRotator newRotation = FMath::RInterpTo(currentRotation, targetPosition, DeltaTime, rotationSpeed);
+	SetActorRotation(newRotation);
 
-	// Stop opening when we reach the target position
-	if (FMath::IsNearlyEqual(currentLocation.Z, targetPosition, 1.0f))
+	// Stop rotating when the target rotation is reached
+	if (currentRotation.Equals(targetPosition, 1.0f)) // Tolerance of 1 degree
 	{
 		opening = false;
 	}
@@ -51,15 +53,19 @@ void ARoom3_Actor_Door::MoveDoor(float DeltaTime, float targetPosition)
 void ARoom3_Actor_Door::OpenDoor()
 {
 	opening = true;
+
+	// Toggle between opening and closing
+	if (GetActorRotation().Equals(initialRotation, 1.0f))
+	{
+		targetRotation = initialRotation + FRotator(0.0f, -90.0f, 0.0f); // Open door
+	}
 }
 
 void ARoom3_Actor_Door::CloseDoor()
 {
 	opening = false;
 
-	FVector currentLocation = GetActorLocation();
-	currentLocation.Z = initialZPosition;
-	SetActorLocation(currentLocation);
+	SetActorRotation(initialRotation);
 }
 
 void ARoom3_Actor_Door::Interact()

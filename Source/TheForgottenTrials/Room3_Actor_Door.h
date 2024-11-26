@@ -35,7 +35,7 @@ class THEFORGOTTENTRIALS_API ARoom3_Actor_Door : public AActor, public IInteract
 		// Called when the game starts or when spawned
 		virtual void BeginPlay() override;
 
-		void MoveDoor(float DeltaTime, float targetPosition);
+		void MoveDoor(float DeltaTime, FRotator targetPosition);
 
 		void OpenDoor();
 
@@ -43,13 +43,12 @@ class THEFORGOTTENTRIALS_API ARoom3_Actor_Door : public AActor, public IInteract
 		ARoom3_Actor_DoorsManager* doorsManager;
 
 		UPROPERTY(EditAnywhere, Category = "Movement")
-		float targetZPosition;
-		
-		UPROPERTY(EditAnywhere, Category = "Movement")
-		float initialZPosition;
+		FRotator targetRotation;
 
 		UPROPERTY(EditAnywhere, Category = "Movement")
-		float moveSpeed;
+		float rotationSpeed;
+
+		FRotator initialRotation;
 
 		bool opening;
 };

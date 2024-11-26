@@ -53,8 +53,7 @@ void ARoom3_Actor_SymbolsManager::CheckSequenceOfSymbols(ARoom3_Actor_Symbols* i
 
 		if (currentSequenceIndex == correctSymbolSequence.Num())
 		{
-			//Open final door
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Correct sequence completed!"));
+			finalDoor->OpenDoor();
 		}
 	}
 	else

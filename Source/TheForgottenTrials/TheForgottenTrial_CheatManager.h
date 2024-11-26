@@ -11,22 +11,23 @@ class THEFORGOTTENTRIALS_API UTheForgottenTrial_CheatManager : public UCheatMana
 {
 	GENERATED_BODY()
 
-public:
-	//Room 1
-	UFUNCTION(Exec)
-	void CompleteRoom1();
+	public:
+		//Room 1
+		UFUNCTION(Exec)
+		void CompleteRoom1();
 
-	//Room 2
-	UFUNCTION(Exec)
-	void CompleteRoom2();
+		//Room 2
+		UFUNCTION(Exec)
+		void CompleteRoom2();
 
-	//Room 3
-	UFUNCTION(Exec)
-	void CompleteRoom3();
+		//Room 3
+		UFUNCTION(Exec)
+		void CompleteRoom3();
 
-	/*
-	//Room 4
-	UFUNCTION(Exec)
-	void CompleteRoom4();
-	*/
+		UFUNCTION(Exec)
+		void ShowCodeRoom2();
+
+		//Teleport functions
+		UFUNCTION(Exec)
+		void TeleportToWaypoint(int id);
 };

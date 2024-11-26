@@ -7,6 +7,7 @@
 #include "Serialization/StructuredArchive.h"
 #include "Room3_Actor_Symbols.h"
 #include "Room3_Actor_Door.h"
+#include "Room3_Actor_FinalDoor.h"
 #include "Room3_Actor_SymbolsManager.generated.h"
 
 class ARoom3_Actor_DoorsManager;
@@ -26,6 +27,9 @@ class THEFORGOTTENTRIALS_API ARoom3_Actor_SymbolsManager : public AActor
 		void SetCorrectSymbols();
 
 		void CheckSequenceOfSymbols(ARoom3_Actor_Symbols* interactedSymbol);
+
+		UPROPERTY(EditAnywhere, Category = "Final Door")
+		ARoom3_Actor_FinalDoor* finalDoor;
 
 	protected:
 		// Called when the game starts or when spawned
