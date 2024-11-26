@@ -2,6 +2,7 @@
 
 
 #include "Room2_Actor_BigPaper.h"
+#include "Net/UnrealNetwork.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "UObject/ConstructorHelpers.h"
@@ -11,6 +12,9 @@ ARoom2_Actor_BigPaper::ARoom2_Actor_BigPaper()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	// Set this actor to replicate
+	bReplicates = true;
 
     textRender = nullptr;
 }

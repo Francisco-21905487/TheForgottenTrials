@@ -11,5 +11,11 @@ public class TheForgottenTrialsTarget : TargetRules
 		DefaultBuildSettings = BuildSettingsVersion.V5;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_4;
 		ExtraModuleNames.Add("TheForgottenTrials");
-	}
+
+		GlobalDefinitions.Add("UE_WITH_CHEAT_MANAGER=1");
+		GlobalDefinitions.Add("ALLOW_CONSOLE=1");
+
+		bUseLoggingInShipping = true;
+		bOverrideBuildEnvironment = true;
+    }
 }

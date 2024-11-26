@@ -17,10 +17,10 @@ ARoom1_Actor_FinalDoor::ARoom1_Actor_FinalDoor()
 	DoorTriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("DoorTriggerBox"));
 	DoorTriggerBox->SetupAttachment(RootComponent);
 	DoorTriggerBox->SetBoxExtent(FVector(100.f, 100.f, 100.f));
+	DoorTriggerBox->SetMobility(EComponentMobility::Static);
 	DoorTriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ARoom1_Actor_FinalDoor::OnTriggerBeginOverlap);
 	DoorTriggerBox->OnComponentEndOverlap.AddDynamic(this, &ARoom1_Actor_FinalDoor::OnTriggerEndOverlap);
 
-	targetRotation = FRotator(0.0f, 90.0f, 0.0f);
 	rotationSpeed = 2.0f;
 	rotating = false;
 }
@@ -54,12 +54,12 @@ void ARoom1_Actor_FinalDoor::Tick(float DeltaTime)
 void ARoom1_Actor_FinalDoor::OpenDoor()
 {
 	rotating = true;
-	targetRotation = initialRotation + FRotator(0.0f, 90.0f, 0.0f);
+	targetRotation = initialRotation + FRotator(0.0f, -90.0f, 0.0f);
 }
 
 void ARoom1_Actor_FinalDoor::CloseDoor()
 {
-	if (rotating) return;
+	//if (rotating) return;
 
 	rotating = true;
 	targetRotation = initialRotation;
