@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Room1_Actor_MazeDoors.h"
+#include "Room4_Actor_FinalDoor.h"
 #include "FinalRoomLogic.generated.h"
 
 UCLASS()
@@ -36,9 +36,9 @@ private:
 	int32 IsabelVotes;
 
 	UPROPERTY(EditAnywhere, Category = "Doors")
-	ARoom1_Actor_MazeDoors* EthanDoor;
+	ARoom4_Actor_FinalDoor* EthanDoor;
 
 	UPROPERTY(EditAnywhere, Category = "Doors")
-	ARoom1_Actor_MazeDoors* IsabelDoor;
+	ARoom4_Actor_FinalDoor* IsabelDoor;
 
 };

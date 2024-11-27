@@ -56,13 +56,13 @@ void AFinalRoomLogic::DetermineOutcome()
     {
         if (EthanDoor) EthanDoor->OpenDoor();
         if (IsabelDoor) IsabelDoor->OpenDoor();
-        GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Both live!"));
+        //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Both live!"));
     }
     else if (EthanVotes == 2)
     {
         if (EthanDoor)
         {
-            GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Calling OpenDoor() on EthanDoor."));
+            //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Calling OpenDoor() on EthanDoor."));
             EthanDoor->OpenDoor();
         }
         else
@@ -72,9 +72,9 @@ void AFinalRoomLogic::DetermineOutcome()
     }
     else if (IsabelVotes == 2)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Isabel lives!"));
+        //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Isabel lives!"));
         if (IsabelDoor) IsabelDoor->OpenDoor();
-        GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Isabel lives!"));
+        //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Isabel lives!"));
     }
     else
     {

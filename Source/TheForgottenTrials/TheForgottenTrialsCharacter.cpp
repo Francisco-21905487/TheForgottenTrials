@@ -15,6 +15,7 @@
 #include "Engine/LocalPlayer.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include <Kismet/GameplayStatics.h>
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -47,6 +48,15 @@ void ATheForgottenTrialsCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
+
+	TArray<AActor*> foundCheatManagerActors;
+
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARooms_Actor_CheatManager::StaticClass(), foundCheatManagerActors);
+
+	for (AActor* cheatManagerActor : foundCheatManagerActors)
+	{
+		actorCheatManager = Cast<ARooms_Actor_CheatManager>(cheatManagerActor);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -68,6 +78,14 @@ void ATheForgottenTrialsCharacter::SetupPlayerInputComponent(UInputComponent* Pl
 		
 		// Interact
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ATheForgottenTrialsCharacter::Interact);
+
+		//cheats
+		EnhancedInputComponent->BindAction(Cheat1Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat1);
+		EnhancedInputComponent->BindAction(Cheat2Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat2);
+		EnhancedInputComponent->BindAction(Cheat3Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat3);
+		EnhancedInputComponent->BindAction(Cheat4Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat4);
+        EnhancedInputComponent->BindAction(Cheat5Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat5);
+		EnhancedInputComponent->BindAction(Cheat6Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat6);
 
 
 	}
@@ -118,4 +136,36 @@ void ATheForgottenTrialsCharacter::Interact()
 			InteractableActor->Interact();
 		}
 	}
+}
+
+//cheats Functions
+
+void ATheForgottenTrialsCharacter::ActivateCheat1()
+{
+	actorCheatManager->CompleteRoom1();
+}
+
+void ATheForgottenTrialsCharacter::ActivateCheat2()
+{
+	actorCheatManager->CompleteRoom2();
+}
+
+void ATheForgottenTrialsCharacter::ActivateCheat3()
+{
+	actorCheatManager->CompleteRoom3();
+}
+
+void ATheForgottenTrialsCharacter::ActivateCheat4()
+{
+	actorCheatManager->ShowCodeRoom2();
+}
+
+void ATheForgottenTrialsCharacter::ActivateCheat5()
+{
+	actorCheatManager->TeleportToNextWaypoint();
+}
+
+void ATheForgottenTrialsCharacter::ActivateCheat6()
+{
+	actorCheatManager->TeleportToPreviousWaypoint();
 }
