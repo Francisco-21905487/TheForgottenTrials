@@ -114,14 +114,28 @@ void ATheForgottenTrialsCharacter::Interact()
 
 	if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params))
 	{
-		IInteractable* InteractableActor = Cast<IInteractable>(HitResult.GetActor());
-		if (InteractableActor)
+		if(HitResult.GetActor() && HitResult.GetActor()->Implements<UInteractable>())
 		{
-			InteractableActor->Interact();
+			Server_Interact(HitResult.GetActor());
+
+			IInteractable* InteractableActor = Cast<IInteractable>(HitResult.GetActor());
+			if (InteractableActor)
+			{
+				//InteractableActor->Interact();
+			}
+			else
+			{
+				UE_LOG(LogTemplateCharacter, Warning, TEXT("No interactable actor found."));
+			}
 		}
-		else
-		{
-			UE_LOG(LogTemplateCharacter, Warning, TEXT("No interactable actor found."));
-		}
+	}
+}
+
+void ATheForgottenTrialsCharacter::Server_Interact_Implementation(AActor* ActorToInteractWith)
+{
+	IInteractable* InteractableActor = Cast<IInteractable>(ActorToInteractWith);
+	if (InteractableActor)
+	{
+		InteractableActor->Interact();
 	}
 }

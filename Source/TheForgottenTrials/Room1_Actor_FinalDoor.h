@@ -27,6 +27,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps)const;
+
 private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
@@ -42,6 +44,7 @@ private:
 	float rotationSpeed;
 
 	FRotator initialRotation;
+	UPROPERTY(Replicated)
 	bool rotating;
 
 	UFUNCTION()

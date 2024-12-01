@@ -4,6 +4,7 @@
 #include "Room1_Actor_FinalDoor.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Character.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ARoom1_Actor_FinalDoor::ARoom1_Actor_FinalDoor()
@@ -13,6 +14,7 @@ ARoom1_Actor_FinalDoor::ARoom1_Actor_FinalDoor()
 
 	doorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
 	RootComponent = doorMesh;
+	doorMesh->SetIsReplicated(true);
 
 	DoorTriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("DoorTriggerBox"));
 	DoorTriggerBox->SetupAttachment(RootComponent);
@@ -23,6 +25,8 @@ ARoom1_Actor_FinalDoor::ARoom1_Actor_FinalDoor()
 
 	rotationSpeed = 2.0f;
 	rotating = false;
+
+	bReplicates = true;
 }
 
 // Called when the game starts or when spawned
@@ -82,5 +86,12 @@ void ARoom1_Actor_FinalDoor::OnTriggerEndOverlap(UPrimitiveComponent * Overlappe
 		CloseDoor();
 		
 	}
+}
+
+void ARoom1_Actor_FinalDoor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ARoom1_Actor_FinalDoor, rotating);
 }
 
