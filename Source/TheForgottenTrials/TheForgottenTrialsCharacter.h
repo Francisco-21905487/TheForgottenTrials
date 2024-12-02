@@ -81,7 +81,10 @@ protected:
 	void Look(const FInputActionValue& Value);
 
 	void Interact();
-
+  
+	UFUNCTION(Server, Reliable)
+	void Server_Interact(AActor* ActorToInteractWith);
+  
 	//cheats
 	void ActivateCheat1();
 	void ActivateCheat2();

@@ -84,7 +84,7 @@ void ATheForgottenTrialsCharacter::SetupPlayerInputComponent(UInputComponent* Pl
 		EnhancedInputComponent->BindAction(Cheat2Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat2);
 		EnhancedInputComponent->BindAction(Cheat3Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat3);
 		EnhancedInputComponent->BindAction(Cheat4Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat4);
-        EnhancedInputComponent->BindAction(Cheat5Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat5);
+    EnhancedInputComponent->BindAction(Cheat5Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat5);
 		EnhancedInputComponent->BindAction(Cheat6Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat6);
 
 
@@ -130,11 +130,19 @@ void ATheForgottenTrialsCharacter::Interact()
 
 	if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params))
 	{
-		IInteractable* InteractableActor = Cast<IInteractable>(HitResult.GetActor());
-		if (InteractableActor)
+		if(HitResult.GetActor() && HitResult.GetActor()->Implements<UInteractable>())
 		{
-			InteractableActor->Interact();
+			Server_Interact(HitResult.GetActor());
 		}
+	}
+}
+
+void ATheForgottenTrialsCharacter::Server_Interact_Implementation(AActor* ActorToInteractWith)
+{
+	IInteractable* InteractableActor = Cast<IInteractable>(ActorToInteractWith);
+	if (InteractableActor)
+	{
+		InteractableActor->Interact();
 	}
 }
 

@@ -27,6 +27,7 @@ ARoom1_Actor_Button::ARoom1_Actor_Button()
 
 	playerInRange = false;
 
+	bReplicates = true;
 }
 
 // Called when the game starts or when spawned
