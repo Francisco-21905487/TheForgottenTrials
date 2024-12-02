@@ -13,6 +13,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "Engine/World.h"
+#include "DrawDebugHelpers.h"
+#include <Kismet/GameplayStatics.h>
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -45,6 +48,15 @@ void ATheForgottenTrialsCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
+
+	TArray<AActor*> foundCheatManagerActors;
+
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARooms_Actor_CheatManager::StaticClass(), foundCheatManagerActors);
+
+	for (AActor* cheatManagerActor : foundCheatManagerActors)
+	{
+		actorCheatManager = Cast<ARooms_Actor_CheatManager>(cheatManagerActor);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -67,11 +79,15 @@ void ATheForgottenTrialsCharacter::SetupPlayerInputComponent(UInputComponent* Pl
 		// Interact
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ATheForgottenTrialsCharacter::Interact);
 
+		//cheats
+		EnhancedInputComponent->BindAction(Cheat1Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat1);
+		EnhancedInputComponent->BindAction(Cheat2Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat2);
+		EnhancedInputComponent->BindAction(Cheat3Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat3);
+		EnhancedInputComponent->BindAction(Cheat4Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat4);
+    EnhancedInputComponent->BindAction(Cheat5Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat5);
+		EnhancedInputComponent->BindAction(Cheat6Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat6);
 
-	}
-	else
-	{
-		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+
 	}
 }
 
@@ -117,16 +133,6 @@ void ATheForgottenTrialsCharacter::Interact()
 		if(HitResult.GetActor() && HitResult.GetActor()->Implements<UInteractable>())
 		{
 			Server_Interact(HitResult.GetActor());
-
-			IInteractable* InteractableActor = Cast<IInteractable>(HitResult.GetActor());
-			if (InteractableActor)
-			{
-				//InteractableActor->Interact();
-			}
-			else
-			{
-				UE_LOG(LogTemplateCharacter, Warning, TEXT("No interactable actor found."));
-			}
 		}
 	}
 }
@@ -138,4 +144,36 @@ void ATheForgottenTrialsCharacter::Server_Interact_Implementation(AActor* ActorT
 	{
 		InteractableActor->Interact();
 	}
+}
+
+//cheats Functions
+
+void ATheForgottenTrialsCharacter::ActivateCheat1()
+{
+	actorCheatManager->CompleteRoom1();
+}
+
+void ATheForgottenTrialsCharacter::ActivateCheat2()
+{
+	actorCheatManager->CompleteRoom2();
+}
+
+void ATheForgottenTrialsCharacter::ActivateCheat3()
+{
+	actorCheatManager->CompleteRoom3();
+}
+
+void ATheForgottenTrialsCharacter::ActivateCheat4()
+{
+	actorCheatManager->ShowCodeRoom2();
+}
+
+void ATheForgottenTrialsCharacter::ActivateCheat5()
+{
+	actorCheatManager->TeleportToNextWaypoint();
+}
+
+void ATheForgottenTrialsCharacter::ActivateCheat6()
+{
+	actorCheatManager->TeleportToPreviousWaypoint();
 }

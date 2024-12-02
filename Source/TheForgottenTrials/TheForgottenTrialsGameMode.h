@@ -11,8 +11,8 @@ class ATheForgottenTrialsGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
-public:
-	ATheForgottenTrialsGameMode();
+	public:
+		ATheForgottenTrialsGameMode();
 };
 
 

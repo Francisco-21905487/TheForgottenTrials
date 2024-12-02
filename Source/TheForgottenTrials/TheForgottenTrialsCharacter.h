@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "Rooms_Actor_CheatManager.h"
 #include "TheForgottenTrialsCharacter.generated.h"
 
 class UInputComponent;
@@ -40,6 +41,25 @@ class ATheForgottenTrialsCharacter : public ACharacter
 	/** Interact Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* InteractAction;
+
+	//cheats actions
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* Cheat1Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* Cheat2Action;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* Cheat3Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* Cheat4Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* Cheat5Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* Cheat6Action;
 	
 public:
 	ATheForgottenTrialsCharacter();
@@ -61,9 +81,19 @@ protected:
 	void Look(const FInputActionValue& Value);
 
 	void Interact();
-
+  
 	UFUNCTION(Server, Reliable)
 	void Server_Interact(AActor* ActorToInteractWith);
+  
+	//cheats
+	void ActivateCheat1();
+	void ActivateCheat2();
+	void ActivateCheat3();
+	void ActivateCheat4();
+	void ActivateCheat5();
+	void ActivateCheat6();
+
+	ARooms_Actor_CheatManager* actorCheatManager;
 
 protected:
 	// APawn interface
