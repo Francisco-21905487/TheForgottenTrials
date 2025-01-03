@@ -19,6 +19,9 @@ class THEFORGOTTENTRIALS_API ATheForgottenTrialsPlayerController : public APlaye
 	public:
 		UFUNCTION(Client, Reliable)
 		void ClientOpenKeypadUI(TSubclassOf<UUserWidget> keypadWidgetClass);
+
+		UFUNCTION(Client, Reliable)
+		void ClientResetRoom3(FVector waypointStartRoom3);
 	
 	protected:
 		virtual void BeginPlay() override;

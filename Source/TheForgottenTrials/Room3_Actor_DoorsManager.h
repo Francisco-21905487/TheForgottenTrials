@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/BoxComponent.h"
 #include "Room3_Actor_Door.h"
 #include "Room3_Actor_ArrowsManager.h"
 #include "Room3_Actor_SymbolsManager.h"
@@ -31,8 +32,18 @@ class THEFORGOTTENTRIALS_API ARoom3_Actor_DoorsManager : public AActor
 
 		void SelectCorrectDoor();
 
+		UFUNCTION()
+		void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 		UFUNCTION(NetMulticast, Reliable)
 		void MulticastSelectCorrectDoor(int correctDoorIndex, int i);
+
+		UFUNCTION(Server, Reliable)
+		void ServerResetRoom(APlayerController* InteractingController);
+
+		// Box component to detect player proximity
+		UPROPERTY(VisibleAnywhere)
+		UBoxComponent* proximityBox;
 
 		UPROPERTY(EditAnywhere, Category = "Symbols")
 		ARoom3_Actor_SymbolsManager* symbolsManager;
@@ -45,4 +56,6 @@ class THEFORGOTTENTRIALS_API ARoom3_Actor_DoorsManager : public AActor
 
 		UPROPERTY(EditAnywhere)
 		AActor* waypointStartRoom3;
+
+		APlayerController* interactController;
 };

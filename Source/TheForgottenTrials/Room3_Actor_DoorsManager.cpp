@@ -3,15 +3,23 @@
 #pragma once
 
 #include "Room3_Actor_DoorsManager.h"
+#include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerController.h"
 #include "Net/UnrealNetwork.h"
+#include "TheForgottenTrialsPlayerController.h"
 
 // Sets default values
 ARoom3_Actor_DoorsManager::ARoom3_Actor_DoorsManager()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	// Initialize the ProximityBox
+	proximityBox = CreateDefaultSubobject<UBoxComponent>(TEXT("ProximityBox"));
+	proximityBox->SetupAttachment(RootComponent);
+	proximityBox->SetBoxExtent(FVector(100.f, 100.f, 100.f));
+	proximityBox->OnComponentBeginOverlap.AddDynamic(this, &ARoom3_Actor_DoorsManager::OnOverlapBegin);
 
 	bReplicates = true;
 	bAlwaysRelevant = true;
@@ -50,6 +58,17 @@ void ARoom3_Actor_DoorsManager::MulticastSelectCorrectDoor_Implementation(int co
 	arrowsManager->SetArrowRotation(i, correctDoorIndex);
 }
 
+void ARoom3_Actor_DoorsManager::ServerResetRoom_Implementation(APlayerController* InteractingController)
+{
+	if (InteractingController)
+	{
+		ATheForgottenTrialsPlayerController* myPlayerController = Cast<ATheForgottenTrialsPlayerController>(InteractingController);
+		if (myPlayerController)
+		{
+			myPlayerController->ClientResetRoom3(waypointStartRoom3->GetActorLocation());
+		}
+	}
+}
 
 void ARoom3_Actor_DoorsManager::ResetRoom3()
 {
@@ -79,9 +98,24 @@ void ARoom3_Actor_DoorsManager::ResetRoom3()
 	SelectCorrectDoor();
 
 	//Reset the player to the beginning of the room3
-	APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	ServerResetRoom(interactController);
+
+	/*APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	if (playerController && playerController->GetPawn())
 	{
 		playerController->GetPawn()->SetActorLocation(waypointStartRoom3->GetActorLocation());
+	}*/
+}
+
+void ARoom3_Actor_DoorsManager::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && (OtherActor != this))
+	{
+		AController* playerController = OtherActor->GetInstigatorController();
+		if (!playerController) return;
+
+		APlayerController* overlappingPlayerController = Cast<APlayerController>(playerController);
+
+		interactController = overlappingPlayerController;
 	}
 }

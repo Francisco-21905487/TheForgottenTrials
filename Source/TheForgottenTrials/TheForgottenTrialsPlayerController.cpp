@@ -41,3 +41,12 @@ void ATheForgottenTrialsPlayerController::ClientOpenKeypadUI_Implementation(TSub
         }
     }
 }
+
+void ATheForgottenTrialsPlayerController::ClientResetRoom3_Implementation(FVector waypointStartRoom3)
+{
+    if (IsLocalController())
+    {
+        this->GetPawn()->SetActorLocation(waypointStartRoom3);
+    }
+}
+
