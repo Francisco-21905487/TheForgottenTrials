@@ -13,9 +13,6 @@ ARoom2_Actor_BigPaper::ARoom2_Actor_BigPaper()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// Set this actor to replicate
-	bReplicates = true;
-
     textRender = nullptr;
 }
 

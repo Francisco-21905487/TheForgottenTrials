@@ -15,17 +15,15 @@ UCLASS()
 class THEFORGOTTENTRIALS_API ATheForgottenTrialsPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+
+	public:
+		UFUNCTION(Client, Reliable)
+		void ClientOpenKeypadUI(TSubclassOf<UUserWidget> keypadWidgetClass);
 	
-protected:
+	protected:
+		virtual void BeginPlay() override;
 
-	/** Input Mapping Context to be used for player input */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputMappingContext* InputMappingContext;
-
-	// Begin Actor interface
-protected:
-
-	virtual void BeginPlay() override;
-
-	// End Actor interface
+		/** Input Mapping Context to be used for player input */
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+		UInputMappingContext* InputMappingContext;
 };

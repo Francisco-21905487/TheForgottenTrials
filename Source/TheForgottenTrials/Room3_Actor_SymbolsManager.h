@@ -33,7 +33,7 @@ class THEFORGOTTENTRIALS_API ARoom3_Actor_SymbolsManager : public AActor
 
 	protected:
 		// Called when the game starts or when spawned
-		virtual void BeginPlay() override;		
+		virtual void BeginPlay() override;
 
 		UPROPERTY(EditAnywhere, Category = "Symbols")
 		ARoom3_Actor_Symbols* symbols[8];

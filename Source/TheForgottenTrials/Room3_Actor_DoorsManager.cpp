@@ -5,6 +5,7 @@
 #include "Room3_Actor_DoorsManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerController.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ARoom3_Actor_DoorsManager::ARoom3_Actor_DoorsManager()
@@ -12,6 +13,8 @@ ARoom3_Actor_DoorsManager::ARoom3_Actor_DoorsManager()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	bReplicates = true;
+	bAlwaysRelevant = true;
 }
 
 // Called when the game starts or when spawned
@@ -31,32 +34,22 @@ void ARoom3_Actor_DoorsManager::Tick(float DeltaTime)
 void ARoom3_Actor_DoorsManager::SelectCorrectDoor()
 {
 	// Choose a random door to be the correct one
-	// First sequence of doors
-	int correctDoorIndex = FMath::RandRange(0, 1);
-	doors[correctDoorIndex]->correctDoor = true;
-	correctDoors[0] = doors[correctDoorIndex];
-	arrowsManager->SetArrowRotation(0, correctDoorIndex);
-
-	// Second sequence of doors
-	correctDoorIndex = FMath::RandRange(2, 3);
-	doors[correctDoorIndex]->correctDoor = true;
-	correctDoors[1] = doors[correctDoorIndex];
-	arrowsManager->SetArrowRotation(1, correctDoorIndex);
-
-	// Third sequence of doors
-	correctDoorIndex = FMath::RandRange(4, 5);
-	doors[correctDoorIndex]->correctDoor = true;
-	correctDoors[2] = doors[correctDoorIndex];
-	arrowsManager->SetArrowRotation(2, correctDoorIndex);
-
-	// Fourth sequence of doors
-	correctDoorIndex = FMath::RandRange(6, 7);
-	doors[correctDoorIndex]->correctDoor = true;
-	correctDoors[3] = doors[correctDoorIndex];
-	arrowsManager->SetArrowRotation(3, correctDoorIndex);
+	for (int i = 0; i < 4; i++)
+	{
+		int correctDoorIndex = FMath::RandRange(i * 2, i * 2 + 1);
+		MulticastSelectCorrectDoor(correctDoorIndex, i);
+	}
 
 	symbolsManager->SetCorrectSymbols();
 }
+
+void ARoom3_Actor_DoorsManager::MulticastSelectCorrectDoor_Implementation(int correctDoorIndex, int i)
+{
+	doors[correctDoorIndex]->correctDoor = true;
+	correctDoors[i] = doors[correctDoorIndex];
+	arrowsManager->SetArrowRotation(i, correctDoorIndex);
+}
+
 
 void ARoom3_Actor_DoorsManager::ResetRoom3()
 {

@@ -147,7 +147,6 @@ void ATheForgottenTrialsCharacter::Server_Interact_Implementation(AActor* ActorT
 }
 
 //cheats Functions
-
 void ATheForgottenTrialsCharacter::ActivateCheat1()
 {
 	actorCheatManager->CompleteRoom1();

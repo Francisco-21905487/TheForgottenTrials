@@ -26,12 +26,15 @@ public:
 	virtual void Interact() override;
 
 	UFUNCTION(BlueprintCallable)
-	void CloseWidget();
-
-	UFUNCTION(BlueprintCallable)
 	bool CheckCode(FString KeypadCode);
 
-private:
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<UUserWidget> keypadWidgetClass;
+
 	UPROPERTY(EditAnywhere, Category = "BigPaper")
 	ARoom2_Actor_BigPaper* targetBigPaper;
 
@@ -55,16 +58,12 @@ private:
 	UFUNCTION()
 	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	UPROPERTY()
-	UUserWidget* keypadWidget;
+	UFUNCTION(Server, Reliable)
+	void ServerInteract(APlayerController* InteractingController);
+
+	APlayerController* interactController;
+	ACharacter* interactCharacter;
 
 	// Flag to check if player is in range
 	bool playerInRange;
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
-	TSubclassOf<UUserWidget> keypadWidgetClass;
 };

@@ -25,11 +25,14 @@ public:
 
 	bool correctSymbol = false;
 
+	UPROPERTY(Replicated)
 	bool resetMovement = false;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 
 	void MoveActorPosition(float DeltaTime, float targetPosition);
 	void MoveActorPositionInReverse(float DeltaTime, float targetPosition);
@@ -46,5 +49,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float moveSpeed = 0;
 
+	UPROPERTY(Replicated)
 	bool moving = false;
 };

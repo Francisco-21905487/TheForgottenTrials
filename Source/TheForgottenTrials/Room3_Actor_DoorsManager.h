@@ -31,6 +31,9 @@ class THEFORGOTTENTRIALS_API ARoom3_Actor_DoorsManager : public AActor
 
 		void SelectCorrectDoor();
 
+		UFUNCTION(NetMulticast, Reliable)
+		void MulticastSelectCorrectDoor(int correctDoorIndex, int i);
+
 		UPROPERTY(EditAnywhere, Category = "Symbols")
 		ARoom3_Actor_SymbolsManager* symbolsManager;
 

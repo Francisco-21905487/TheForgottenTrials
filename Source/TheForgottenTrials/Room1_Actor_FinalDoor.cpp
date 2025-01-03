@@ -94,4 +94,3 @@ void ARoom1_Actor_FinalDoor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 
 	DOREPLIFETIME(ARoom1_Actor_FinalDoor, rotating);
 }
-
