@@ -24,6 +24,8 @@ class THEFORGOTTENTRIALS_API ARoom3_Actor_ArrowsManager : public AActor
 		// Called when the game starts or when spawned
 		virtual void BeginPlay() override;
 
+		//void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 		UPROPERTY(EditAnywhere, Category = "Arrows")
-		AActor* arrows[4];
+		TArray <AActor*> arrows;
 };

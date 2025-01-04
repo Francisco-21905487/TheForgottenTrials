@@ -3,6 +3,7 @@
 
 #include "Room3_Actor_Symbols.h"
 #include "Room3_Actor_SymbolsManager.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ARoom3_Actor_Symbols::ARoom3_Actor_Symbols()
@@ -72,4 +73,12 @@ void ARoom3_Actor_Symbols::Interact()
 	moving = true;
 	
 	//symbolsManager->CheckSequenceOfSymbols(this);
+}
+
+void ARoom3_Actor_Symbols::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ARoom3_Actor_Symbols, moving);
+	DOREPLIFETIME(ARoom3_Actor_Symbols, resetMovement);
 }

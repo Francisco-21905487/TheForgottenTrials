@@ -7,10 +7,9 @@
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/UserWidget.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
 #include "Engine/Engine.h"
 #include "string"
+#include "TheForgottenTrialsPlayerController.h"
 
 // Sets default values
 ARoom2_Actor_Keypad::ARoom2_Actor_Keypad()
@@ -45,68 +44,23 @@ void ARoom2_Actor_Keypad::Tick(float DeltaTime)
 
 }
 
+void ARoom2_Actor_Keypad::ServerInteract_Implementation(APlayerController* InteractingController)
+{
+	if (InteractingController)
+	{
+		ATheForgottenTrialsPlayerController* myPlayerController = Cast<ATheForgottenTrialsPlayerController>(InteractingController);
+		if (myPlayerController)
+		{
+			myPlayerController->ClientOpenKeypadUI(keypadWidgetClass);
+		}
+	}
+}
+
 void ARoom2_Actor_Keypad::Interact()
 {
-	if (playerInRange)
-	{
-		// Get the player controller
-		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		if (PlayerController && keypadWidgetClass)
-		{
-			// Create the widget
-			keypadWidget = CreateWidget<UUserWidget>(PlayerController, keypadWidgetClass);
-			if (keypadWidget)
-			{
-				// Add the widget to the viewport
-				keypadWidget->AddToViewport();
-
-				// Set input mode to game and UI
-				FInputModeGameAndUI InputMode;
-				InputMode.SetWidgetToFocus(keypadWidget->TakeWidget());
-				PlayerController->SetInputMode(InputMode);
-
-				// Show the mouse cursor
-				PlayerController->bShowMouseCursor = true;
-
-				// Disable input for the player character
-				ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-				if (PlayerCharacter)
-				{
-					PlayerCharacter->DisableInput(PlayerController);
-				}
-			}
-		}
-	}
+	ServerInteract(interactController);
 }
 
-void ARoom2_Actor_Keypad::CloseWidget()
-{
-	// Remove the widget from the viewport
-	if (keypadWidget)
-	{
-		keypadWidget->RemoveFromParent();
-		keypadWidget = nullptr;
-	}
-
-	// Get the player controller
-	APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	if (playerController)
-	{
-		// Set input mode back to game only
-		FInputModeGameOnly InputMode;
-		playerController->SetInputMode(InputMode);
-
-		// Hide the mouse cursor
-		playerController->bShowMouseCursor = false;
-
-		// Re-enable input for the player character
-		ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-		if (PlayerCharacter)
-		{
-			PlayerCharacter->EnableInput(playerController);
-		}
-	}
-}
 
 bool ARoom2_Actor_Keypad::CheckCode(FString KeypadCode)
 {
@@ -129,6 +83,14 @@ void ARoom2_Actor_Keypad::OnOverlapBegin(class UPrimitiveComponent* OverlappedCo
 {
 	if (OtherActor && (OtherActor != this))
 	{
+		AController* playerController = OtherActor->GetInstigatorController();
+		if (!playerController) return;
+
+		APlayerController* overlappingPlayerController = Cast<APlayerController>(playerController);
+		ACharacter* overlappingCharacter = Cast<ACharacter>(OtherActor);
+
+		interactController = overlappingPlayerController;
+		interactCharacter = overlappingCharacter;
 		playerInRange = true;
 	}
 }
@@ -138,5 +100,7 @@ void ARoom2_Actor_Keypad::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp
 	if (OtherActor && (OtherActor != this))
 	{
 		playerInRange = false;
+		interactController = nullptr;
+		interactCharacter = nullptr;
 	}
 }

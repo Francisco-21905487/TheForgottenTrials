@@ -35,6 +35,8 @@ class THEFORGOTTENTRIALS_API ARoom3_Actor_Door : public AActor, public IInteract
 		// Called when the game starts or when spawned
 		virtual void BeginPlay() override;
 
+		void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
+
 		void MoveDoor(float DeltaTime, FRotator targetPosition);
 
 		void OpenDoor();
@@ -50,5 +52,6 @@ class THEFORGOTTENTRIALS_API ARoom3_Actor_Door : public AActor, public IInteract
 
 		FRotator initialRotation;
 
+		UPROPERTY(Replicated)
 		bool opening;
 };

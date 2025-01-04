@@ -44,6 +44,7 @@ private:
 	float rotationSpeed;
 
 	FRotator initialRotation;
+
 	UPROPERTY(Replicated)
 	bool rotating;
 
