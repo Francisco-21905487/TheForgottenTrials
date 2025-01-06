@@ -3,6 +3,8 @@
 
 #include "Room1_Actor_MazeDoors.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 ARoom1_Actor_MazeDoors::ARoom1_Actor_MazeDoors()
@@ -17,6 +19,12 @@ ARoom1_Actor_MazeDoors::ARoom1_Actor_MazeDoors()
     rotationSpeed = 2.0f; // Adjust rotation speed as needed
     rotating = false;
 
+	audioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	audioComponent->SetupAttachment(RootComponent);
+	audioComponent->bAutoActivate = false;
+
+	bHasPlayedAudio = false;
+
 }
 
 // Called when the game starts or when spawned
@@ -25,6 +33,11 @@ void ARoom1_Actor_MazeDoors::BeginPlay()
 	Super::BeginPlay();
 
     initialRotation = GetActorRotation();
+
+	if (doorOpenSound)
+	{
+		audioComponent->SetSound(doorOpenSound);
+	}
 }
 
 // Called every frame
@@ -49,6 +62,12 @@ void ARoom1_Actor_MazeDoors::Tick(float DeltaTime)
 void ARoom1_Actor_MazeDoors::OpenDoor()
 {
 	rotating = true;
+
+	if (!bHasPlayedAudio && audioComponent && doorOpenSound)
+	{
+		audioComponent->Play();
+		bHasPlayedAudio = true;
+	}
 
 	// Toggle between opening and closing
 	if (GetActorRotation().Equals(initialRotation, 1.0f))
