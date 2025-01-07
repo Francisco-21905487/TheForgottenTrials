@@ -26,6 +26,12 @@ class THEFORGOTTENTRIALS_API ARoom3_Actor_SymbolsManager : public AActor
 
 		void SetCorrectSymbols();
 
+		//UFUNCTION(NetMulticast, Reliable)
+		//void Multicast_CheckSequenceOfSymbols(ARoom3_Actor_Symbols* interactedSymbol);
+
+		UFUNCTION(NetMulticast, Reliable)
+		void Multicast_SetCorrectSymbols(int j);
+
 		void CheckSequenceOfSymbols(ARoom3_Actor_Symbols* interactedSymbol);
 
 		UPROPERTY(EditAnywhere, Category = "Final Door")

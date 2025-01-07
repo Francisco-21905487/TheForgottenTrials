@@ -22,6 +22,13 @@ class THEFORGOTTENTRIALS_API ARoom4_Actor_FinalDoor : public AActor
 		void OpenDoor();
 
 	private:
+		// Function to play the sound
+		void Play2DSound();
+
+		// Sound asset to play
+		UPROPERTY(EditAnywhere, Category = "Sound")
+		USoundBase* doorSound;
+
 		UPROPERTY(VisibleAnywhere, Category = "Components")
 		UStaticMeshComponent* doorMesh;
 

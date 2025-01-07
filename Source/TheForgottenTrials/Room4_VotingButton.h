@@ -47,6 +47,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Other Button")
 	ARoom4_VotingButton* otherButton;
 
+	// Sound asset to play
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundBase* buttonSound;
+
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float targetYPosition = 0;
 
@@ -68,6 +72,9 @@ private:
 	FVector targetLocation;
 	
 	FString characterName;
+
+	// Function to play the sound
+	void Play2DSound();
 
 	void MoveButton(float DeltaTime);
 

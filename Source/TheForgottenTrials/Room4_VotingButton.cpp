@@ -64,6 +64,8 @@ void ARoom4_VotingButton::Interact()
             return;
         }
 
+        Play2DSound();
+
         moving = true;
 
 		//Set this button to already voted
@@ -103,6 +105,14 @@ void ARoom4_VotingButton::MoveButton(float DeltaTime)
     if (FMath::IsNearlyEqual(currentLocation.Y, targetYPosition, 1.0f))
     {
         moving = false;
+    }
+}
+
+void ARoom4_VotingButton::Play2DSound()
+{
+    if (buttonSound)
+    {
+        UGameplayStatics::PlaySound2D(this, buttonSound, 1.0f /*Volume*/, 1.0f /*Pitch*/, 0.0f /*StartTime*/);
     }
 }
 

@@ -5,7 +5,9 @@
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/PlayerController.h"
+#include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
+#include <Net/UnrealNetwork.h>
 
 
 // Sets default values
@@ -42,13 +44,58 @@ void ARoom1_Actor_Button::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (moving)
+	{
+		MoveButton(DeltaTime);
+	}
+}
+
+void ARoom1_Actor_Button::MoveButton(float DeltaTime)
+{
+	if (yAxis) 
+	{
+		FVector currentLocation = buttonMesh->GetComponentLocation();
+		currentLocation.Y = FMath::FInterpTo(currentLocation.Y, targetXPosition, DeltaTime, moveSpeed);
+		buttonMesh->SetWorldLocation(currentLocation);
+
+		if (FMath::IsNearlyEqual(currentLocation.Y, targetXPosition, 1.0f))
+		{
+			moving = false;
+
+			targetFinalDoor->OpenDoor();
+		}
+	}
+	else 
+	{
+		FVector currentLocation = buttonMesh->GetComponentLocation();
+		currentLocation.X = FMath::FInterpTo(currentLocation.X, targetXPosition, DeltaTime, moveSpeed);
+		buttonMesh->SetWorldLocation(currentLocation);
+
+		if (FMath::IsNearlyEqual(currentLocation.X, targetXPosition, 1.0f))
+		{
+			moving = false;
+
+			targetFinalDoor->OpenDoor();
+		}
+	}
+	
 }
 
 void ARoom1_Actor_Button::Interact()
 {
 	if (playerInRange && targetFinalDoor)
 	{
-		targetFinalDoor->OpenDoor();
+		moving = true;
+
+		Multicast_Play2DSound();
+	}
+}
+
+void ARoom1_Actor_Button::Multicast_Play2DSound_Implementation()
+{
+	if (buttonSound)
+	{
+		UGameplayStatics::PlaySound2D(this, buttonSound, 1.0f /*Volume*/, 1.0f /*Pitch*/, 0.0f /*StartTime*/);
 	}
 }
 
@@ -68,3 +115,9 @@ void ARoom1_Actor_Button::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp
 	}
 }
 
+void ARoom1_Actor_Button::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ARoom1_Actor_Button, moving);
+}

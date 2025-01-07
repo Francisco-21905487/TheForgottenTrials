@@ -4,6 +4,7 @@
 #include "FinalRoomLogic.h"
 #include "Room1_Actor_MazeDoors.h"
 #include "Kismet/GameplayStatics.h"
+#include "TheForgottenTrialsPlayerController.h"
 
 // Sets default values
 AFinalRoomLogic::AFinalRoomLogic()
@@ -55,6 +56,21 @@ void AFinalRoomLogic::DetermineOutcome()
     {
         // Neither door opens
 		//Open the lose menu for both players here
+		TArray<AActor*> FoundActors;
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerController::StaticClass(), FoundActors);
+
+        for (AActor* Actor : FoundActors)
+        {
+            APlayerController* PlayerController = Cast<APlayerController>(Actor);
+            if (PlayerController)
+            {
+                ATheForgottenTrialsPlayerController* myPlayerController = Cast<ATheForgottenTrialsPlayerController>(PlayerController);
+                if (myPlayerController)
+                {
+                    myPlayerController->ClientOpenUI(loseWidgetClass);
+                }
+            }
+        }
     }
     else if (EthanVote == "Isabel" && IsabelVote == "Ethan")
     {
@@ -68,6 +84,25 @@ void AFinalRoomLogic::DetermineOutcome()
         if (EthanDoor) EthanDoor->OpenDoor();
 
         //Open the lose menu for Isabel player here
+        TArray<AActor*> FoundActors;
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerController::StaticClass(), FoundActors);
+
+        for (AActor* Actor : FoundActors)
+        {
+            APlayerController* PlayerController = Cast<APlayerController>(Actor);
+            if (PlayerController)
+            {
+                APawn* ControlledPawn = PlayerController->GetPawn();
+                if (ControlledPawn && ControlledPawn->GetName().Contains("Isabel"))
+                {
+                    ATheForgottenTrialsPlayerController* myPlayerController = Cast<ATheForgottenTrialsPlayerController>(PlayerController);
+                    if (myPlayerController)
+                    {
+                        myPlayerController->ClientOpenUI(loseWidgetClass);
+                    }
+                }
+            }
+        }
     }
     else if (EthanVote == "Isabel" && IsabelVote == "Isabel")
     {
@@ -75,6 +110,25 @@ void AFinalRoomLogic::DetermineOutcome()
         if (IsabelDoor) IsabelDoor->OpenDoor();
 
         //Open the lose menu for Ethan player here
+        TArray<AActor*> FoundActors;
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerController::StaticClass(), FoundActors);
+
+        for (AActor* Actor : FoundActors)
+        {
+            APlayerController* PlayerController = Cast<APlayerController>(Actor);
+            if (PlayerController)
+            {
+                APawn* ControlledPawn = PlayerController->GetPawn();
+                if (ControlledPawn && ControlledPawn->GetName().Contains("Ethan"))
+                {
+                    ATheForgottenTrialsPlayerController* myPlayerController = Cast<ATheForgottenTrialsPlayerController>(PlayerController);
+                    if (myPlayerController)
+                    {
+                        myPlayerController->ClientOpenUI(loseWidgetClass);
+                    }
+                }
+            }
+        }
     }
     else
     {

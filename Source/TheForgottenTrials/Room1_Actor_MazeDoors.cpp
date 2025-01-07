@@ -4,7 +4,7 @@
 #include "Room1_Actor_MazeDoors.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/AudioComponent.h"
-#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -21,12 +21,6 @@ ARoom1_Actor_MazeDoors::ARoom1_Actor_MazeDoors()
     rotationSpeed = 2.0f; // Adjust rotation speed as needed
     rotating = false;
 
-	audioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
-	audioComponent->SetupAttachment(RootComponent);
-	audioComponent->bAutoActivate = false;
-
-	bHasPlayedAudio = false;
-
 	bReplicates = true;
 }
 
@@ -36,11 +30,6 @@ void ARoom1_Actor_MazeDoors::BeginPlay()
 	Super::BeginPlay();
 
     initialRotation = GetActorRotation();
-
-	if (doorOpenSound)
-	{
-		audioComponent->SetSound(doorOpenSound);
-	}
 }
 
 // Called every frame
@@ -66,17 +55,20 @@ void ARoom1_Actor_MazeDoors::OpenDoor()
 {
 	rotating = true;
 
-	if (!bHasPlayedAudio && audioComponent && doorOpenSound)
-	{
-		audioComponent->Play();
-		bHasPlayedAudio = true;
-	}
-
+	Play2DSound();
 
 	// Toggle between opening and closing
 	if (GetActorRotation().Equals(initialRotation, 1.0f))
 	{
 		targetRotation = initialRotation + FRotator(0.0f, 90.0f, 0.0f); // Open door
+	}
+}
+
+void ARoom1_Actor_MazeDoors::Play2DSound()
+{
+	if (doorSound)
+	{
+		UGameplayStatics::PlaySound2D(this, doorSound, 2.0f /*Volume*/, 1.0f /*Pitch*/, 0.8f /*StartTime*/);
 	}
 }
 

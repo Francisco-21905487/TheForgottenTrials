@@ -41,11 +41,18 @@ class THEFORGOTTENTRIALS_API ARoom3_Actor_Door : public AActor, public IInteract
 
 		void OpenDoor();
 
+		// Function to play the sound
+		void Play2DSound();
+
 		UPROPERTY(EditAnywhere, Category = "Doors")
 		ARoom3_Actor_DoorsManager* doorsManager;
 
 		UPROPERTY(EditAnywhere, Category = "Movement")
 		FRotator targetRotation;
+
+		// Sound asset to play
+		UPROPERTY(EditAnywhere, Category = "Sound")
+		USoundBase* doorSound;
 
 		UPROPERTY(EditAnywhere, Category = "Movement")
 		float rotationSpeed;

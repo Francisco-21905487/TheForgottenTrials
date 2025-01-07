@@ -24,15 +24,26 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps)const;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_Play2DSound();
+
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UStaticMeshComponent* doorMesh;
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	FRotator targetRotation;
 
+	// Sound asset to play
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundBase* doorSound;
+
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float rotationSpeed;
 
-	FRotator initialRotation;
+	UPROPERTY(Replicated)
 	bool rotating;
+
+	FRotator initialRotation;
 };

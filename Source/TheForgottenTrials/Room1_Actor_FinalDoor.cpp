@@ -4,8 +4,7 @@
 #include "Room1_Actor_FinalDoor.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Character.h"
-#include "Components/AudioComponent.h"
-#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -25,16 +24,10 @@ ARoom1_Actor_FinalDoor::ARoom1_Actor_FinalDoor()
 	DoorTriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ARoom1_Actor_FinalDoor::OnTriggerBeginOverlap);
 	DoorTriggerBox->OnComponentEndOverlap.AddDynamic(this, &ARoom1_Actor_FinalDoor::OnTriggerEndOverlap);
 
-	audioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
-	audioComponent->SetupAttachment(RootComponent);
-	audioComponent->bAutoActivate = false;
-
 	rotationSpeed = 2.0f;
 	rotating = false;
 
 	bReplicates = true;
-
-	bHasPlayedAudio = false;
 }
 
 // Called when the game starts or when spawned
@@ -43,11 +36,6 @@ void ARoom1_Actor_FinalDoor::BeginPlay()
 	Super::BeginPlay();
 	
 	initialRotation = GetActorRotation();
-
-	if (doorOpenSound)
-	{
-		audioComponent->SetSound(doorOpenSound);
-	}
 }
 
 // Called every frame
@@ -71,11 +59,9 @@ void ARoom1_Actor_FinalDoor::Tick(float DeltaTime)
 void ARoom1_Actor_FinalDoor::OpenDoor()
 {
 	rotating = true;
-	if (!bHasPlayedAudio && audioComponent && doorOpenSound)
-	{
-		audioComponent->Play();
-		bHasPlayedAudio = true;  // Prevent the sound from playing again
-	}
+
+	Multicast_Play2DSound();
+
 	targetRotation = initialRotation + FRotator(0.0f, -90.0f, 0.0f);
 }
 
@@ -84,7 +70,18 @@ void ARoom1_Actor_FinalDoor::CloseDoor()
 	//if (rotating) return;
 
 	rotating = true;
+
+	Multicast_Play2DSound();
+
 	targetRotation = initialRotation;
+}
+
+void ARoom1_Actor_FinalDoor::Multicast_Play2DSound_Implementation()
+{
+	if (doorSound)
+	{
+		UGameplayStatics::PlaySound2D(this, doorSound, 2.0f /*Volume*/, 1.0f /*Pitch*/, 0.8f /*StartTime*/);
+	}
 }
 
 void ARoom1_Actor_FinalDoor::OnTriggerBeginOverlap(UPrimitiveComponent * OverlappedComp, AActor * OtherActor,UPrimitiveComponent * OtherComp, int32 OtherBodyIndex,bool bFromSweep, const FHitResult & SweepResult)
@@ -102,7 +99,6 @@ void ARoom1_Actor_FinalDoor::OnTriggerEndOverlap(UPrimitiveComponent * Overlappe
 	if (OtherActor && OtherActor->IsA(ACharacter::StaticClass()))
 	{
 		CloseDoor();
-		
 	}
 }
 

@@ -19,18 +19,42 @@ void ATheForgottenTrialsPlayerController::BeginPlay()
 	}
 }
 
-void ATheForgottenTrialsPlayerController::ClientOpenKeypadUI_Implementation(TSubclassOf<UUserWidget> keypadWidgetClass)
+void ATheForgottenTrialsPlayerController::ClientOpenUI_Implementation(TSubclassOf<UUserWidget> widgetClass)
 {
-    if (IsLocalController() && keypadWidgetClass)
+    if (IsLocalController() && widgetClass)
     {
-        UUserWidget* keypadWidget = CreateWidget<UUserWidget>(this, keypadWidgetClass);
-        if (keypadWidget)
+        UUserWidget* widget = CreateWidget<UUserWidget>(this, widgetClass);
+        if (widget)
         {
-            keypadWidget->AddToViewport();
+            widget->AddToViewport();
 
             // Set input mode
             FInputModeGameAndUI InputMode;
-            InputMode.SetWidgetToFocus(keypadWidget->TakeWidget());
+            InputMode.SetWidgetToFocus(widget->TakeWidget());
+            SetInputMode(InputMode);
+            bShowMouseCursor = true;
+
+            APawn* currentPawn = GetPawn();
+            if (currentPawn)
+            {
+                currentPawn->DisableInput(this);
+            }
+        }
+    }
+}
+
+void ATheForgottenTrialsPlayerController::OpenPauseUI(TSubclassOf<UUserWidget> pauseWidgetClass)
+{
+    if (IsLocalController() && pauseWidgetClass)
+    {
+        UUserWidget* pauseWidget = CreateWidget<UUserWidget>(this, pauseWidgetClass);
+        if (pauseWidget)
+        {
+            pauseWidget->AddToViewport();
+
+            // Set input mode
+            FInputModeGameAndUI InputMode;
+            InputMode.SetWidgetToFocus(pauseWidget->TakeWidget());
             SetInputMode(InputMode);
             bShowMouseCursor = true;
 
@@ -56,5 +80,13 @@ void ATheForgottenTrialsPlayerController::ClientOpenWinMenu_Implementation(FName
     if (IsLocalController())
     {
         UGameplayStatics::OpenLevel(this, winmenu);
+    }
+}
+
+void ATheForgottenTrialsPlayerController::ClientPlaySounds_Implementation(UObject* WorldObject, USoundBase* sound, float volume, float pitch, float startTime)
+{
+    if (IsLocalController() && sound)
+    {
+        UGameplayStatics::PlaySound2D(WorldObject, sound, volume, pitch, startTime);
     }
 }

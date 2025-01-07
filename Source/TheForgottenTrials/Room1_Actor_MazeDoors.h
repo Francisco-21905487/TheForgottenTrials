@@ -25,24 +25,23 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UStaticMeshComponent* doorMesh;
 
+	// Sound asset to play
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundBase* doorSound;
+
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	FRotator targetRotation;
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float rotationSpeed;
 
-	UPROPERTY(EditAnywhere, Category = "Components")
-	class UAudioComponent* audioComponent;
-
-	UPROPERTY(EditAnywhere, Category = "Audio")
-	class USoundCue* doorOpenSound;
-
 	UPROPERTY(Replicated)
 	bool rotating;
 
-	bool bHasPlayedAudio;
-
 	FRotator initialRotation;
+
+	// Function to play the sound
+	void Play2DSound();
 
 protected:
 	// Called when the game starts or when spawned

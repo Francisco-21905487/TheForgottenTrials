@@ -2,6 +2,8 @@
 
 
 #include "Room3_Actor_FinalDoor.h"
+#include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ARoom3_Actor_FinalDoor::ARoom3_Actor_FinalDoor()
@@ -11,9 +13,12 @@ ARoom3_Actor_FinalDoor::ARoom3_Actor_FinalDoor()
 
 	doorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
 	RootComponent = doorMesh;
+	doorMesh->SetIsReplicated(true);
 
 	rotationSpeed = 2.0f; // Adjust rotation speed as needed
 	rotating = false;
+
+	bReplicates = true;
 }
 
 // Called when the game starts or when spawned
@@ -50,9 +55,26 @@ void ARoom3_Actor_FinalDoor::OpenDoor()
 {
 	rotating = true;
 
+	Multicast_Play2DSound();
+
 	// Toggle between opening and closing
 	if (GetActorRotation().Equals(initialRotation, 1.0f))
 	{
 		targetRotation = initialRotation + FRotator(0.0f, -90.0f, 0.0f); // Open door
 	}
+}
+
+void ARoom3_Actor_FinalDoor::Multicast_Play2DSound_Implementation()
+{
+	if (doorSound)
+	{
+		UGameplayStatics::PlaySound2D(this, doorSound, 2.0f /*Volume*/, 1.0f /*Pitch*/, 0.8f /*StartTime*/);
+	}
+}
+
+void ARoom3_Actor_FinalDoor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ARoom3_Actor_FinalDoor, rotating);
 }

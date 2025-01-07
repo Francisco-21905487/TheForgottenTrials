@@ -41,4 +41,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Doors")
 	ARoom4_Actor_FinalDoor* IsabelDoor;
 
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<UUserWidget> loseWidgetClass;
+
 };

@@ -5,8 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
-#include "Components/AudioComponent.h"
-#include "Sound/SoundCue.h"
 #include "Room1_Actor_FinalDoor.generated.h"
 
 UCLASS()
@@ -45,20 +43,17 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float rotationSpeed;
 
-	FRotator initialRotation;
+	// Sound asset to play
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundBase* doorSound;
 
 	UPROPERTY(Replicated)
 	bool rotating;
 
-	UPROPERTY(VisibleAnywhere, Category = "Components")
-	UAudioComponent* audioComponent;
+	FRotator initialRotation;
 
-	// Sound Cue to play when the plate is activated
-	UPROPERTY(EditAnywhere, Category = "Audio")
-	USoundCue* doorOpenSound;
-
-	// Prevent the sound from playing multiple times
-	bool bHasPlayedAudio;
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_Play2DSound();
 
 	UFUNCTION()
 	void OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

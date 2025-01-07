@@ -10,6 +10,7 @@
 #include "Engine/Engine.h"
 #include "string"
 #include "TheForgottenTrialsPlayerController.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ARoom2_Actor_Keypad::ARoom2_Actor_Keypad()
@@ -28,7 +29,10 @@ ARoom2_Actor_Keypad::ARoom2_Actor_Keypad()
 	keypadMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("KeypadMesh"));
 	keypadMesh->SetupAttachment(RootComponent);
 
-	playerInRange = false;
+	playerInRange = false; 
+	
+	bReplicates = true;
+	bAlwaysRelevant = true;
 }
 
 // Called when the game starts or when spawned
@@ -51,7 +55,7 @@ void ARoom2_Actor_Keypad::ServerInteract_Implementation(APlayerController* Inter
 		ATheForgottenTrialsPlayerController* myPlayerController = Cast<ATheForgottenTrialsPlayerController>(InteractingController);
 		if (myPlayerController)
 		{
-			myPlayerController->ClientOpenKeypadUI(keypadWidgetClass);
+			myPlayerController->ClientOpenUI(keypadWidgetClass);
 		}
 	}
 }

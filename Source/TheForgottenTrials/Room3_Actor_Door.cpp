@@ -4,6 +4,7 @@
 #include "Room3_Actor_Door.h"
 #include "Room3_Actor_DoorsManager.h"
 #include "Components/StaticMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -56,6 +57,8 @@ void ARoom3_Actor_Door::OpenDoor()
 {
 	opening = true;
 
+	Play2DSound();
+
 	// Toggle between opening and closing
 	if (GetActorRotation().Equals(initialRotation, 1.0f))
 	{
@@ -82,6 +85,14 @@ void ARoom3_Actor_Door::Interact()
 		doorsManager->ResetRoom3();
 
 		//If we want to add some user feedback put it here
+	}
+}
+
+void ARoom3_Actor_Door::Play2DSound()
+{
+	if (doorSound)
+	{
+		UGameplayStatics::PlaySound2D(this, doorSound, 2.0f /*Volume*/, 1.0f /*Pitch*/, 0.8f /*StartTime*/);
 	}
 }
 

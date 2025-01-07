@@ -18,13 +18,19 @@ class THEFORGOTTENTRIALS_API ATheForgottenTrialsPlayerController : public APlaye
 
 	public:
 		UFUNCTION(Client, Reliable)
-		void ClientOpenKeypadUI(TSubclassOf<UUserWidget> keypadWidgetClass);
+		void ClientOpenUI(TSubclassOf<UUserWidget> widgetClass);
+		
+		UFUNCTION(BlueprintCallable)
+		void OpenPauseUI(TSubclassOf<UUserWidget> pauseWidgetClass);
 
 		UFUNCTION(Client, Reliable)
 		void ClientResetRoom3(FVector waypointStartRoom3);
 
 		UFUNCTION(Client, Reliable)
 		void ClientOpenWinMenu(FName winmenu);
+
+		UFUNCTION(Client, Reliable)
+		void ClientPlaySounds(UObject* WorldObject, USoundBase* sound, float volume, float pitch, float startTime);
 	
 	protected:
 		virtual void BeginPlay() override;

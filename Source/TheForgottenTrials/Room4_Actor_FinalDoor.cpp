@@ -3,6 +3,7 @@
 
 #include "Room4_Actor_FinalDoor.h"
 #include "Components/StaticMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -54,10 +55,20 @@ void ARoom4_Actor_FinalDoor::OpenDoor()
 {
 	rotating = true;
 
+	Play2DSound();
+
 	// Toggle between opening and closing
 	if (GetActorRotation().Equals(initialRotation, 1.0f))
 	{
 		targetRotation = initialRotation + FRotator(0.0f, 90.0f, 0.0f); // Open door
+	}
+}
+
+void ARoom4_Actor_FinalDoor::Play2DSound()
+{
+	if (doorSound)
+	{
+		UGameplayStatics::PlaySound2D(this, doorSound, 2.0f /*Volume*/, 1.0f /*Pitch*/, 0.8f /*StartTime*/);
 	}
 }
 

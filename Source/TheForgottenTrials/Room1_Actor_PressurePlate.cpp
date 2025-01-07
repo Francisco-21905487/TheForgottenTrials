@@ -4,15 +4,14 @@
 #include "Room1_Actor_PressurePlate.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "Components/AudioComponent.h"
-#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 #include "Room1_Actor_MazeDoors.h" 
 
 // Sets default values
 ARoom1_Actor_PressurePlate::ARoom1_Actor_PressurePlate()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+    // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+    PrimaryActorTick.bCanEverTick = true;
 
     // Create and set up the trigger box
     triggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
@@ -28,20 +27,12 @@ ARoom1_Actor_PressurePlate::ARoom1_Actor_PressurePlate()
     // Create and set up the mesh for the pressure plate
     pressurePlateMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PressurePlateMesh"));
     pressurePlateMesh->SetupAttachment(RootComponent);
-
-    audioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
-    audioComponent->SetupAttachment(RootComponent);
-    audioComponent->bAutoActivate = false;  // Don't play the sound automatically
-
-    // Initialize the flag
-    bHasPlayedAudio = false;
-
 }
 
 // Called when the game starts or when spawned
 void ARoom1_Actor_PressurePlate::BeginPlay()
 {
-	Super::BeginPlay();
+    Super::BeginPlay();
 
     // Get the initial location of the pressure plate
     initialLocation = pressurePlateMesh->GetComponentLocation();
@@ -49,18 +40,12 @@ void ARoom1_Actor_PressurePlate::BeginPlay()
     // Calculate the target lowered position
     targetLocation = initialLocation;
     targetLocation.Z -= loweredHeight;
-
-    if (plateActivatedSound)
-    {
-        audioComponent->SetSound(plateActivatedSound);
-    }
-	
 }
 
 // Called every frame
 void ARoom1_Actor_PressurePlate::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
+    Super::Tick(DeltaTime);
 
     // If the plate is lowering, move it down smoothly
     if (lowering)
@@ -73,6 +58,11 @@ void ARoom1_Actor_PressurePlate::Tick(float DeltaTime)
         if (FVector::Dist(CurrentLocation, targetLocation) <= KINDA_SMALL_NUMBER)
         {
             lowering = false;
+
+            if (targetDoor)
+            {
+                targetDoor->OpenDoor();  // Open the door
+            }
         }
     }
 }
@@ -84,15 +74,14 @@ void ARoom1_Actor_PressurePlate::OnOverlapBegin(UPrimitiveComponent* OverlappedC
     {
         lowering = true;  // Start lowering the plate
 
-        if (!bHasPlayedAudio && audioComponent && plateActivatedSound)
-        {
-            audioComponent->Play();  // Play the sound
-            bHasPlayedAudio = true;  // Prevent it from playing again
-        }
+        Play2DSound();
+    }
+}
 
-        if (targetDoor)
-        {
-            targetDoor->OpenDoor();  // Open the door
-        }
+void ARoom1_Actor_PressurePlate::Play2DSound()
+{
+    if (pressurePlateSound)
+    {
+        UGameplayStatics::PlaySound2D(this, pressurePlateSound, 1.0f /*Volume*/, 1.0f /*Pitch*/, 0.0f /*StartTime*/);
     }
 }
