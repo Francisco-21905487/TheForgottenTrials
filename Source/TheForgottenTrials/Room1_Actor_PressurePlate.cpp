@@ -4,6 +4,8 @@
 #include "Room1_Actor_PressurePlate.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundCue.h"
 #include "Room1_Actor_MazeDoors.h" 
 
 // Sets default values
@@ -27,6 +29,13 @@ ARoom1_Actor_PressurePlate::ARoom1_Actor_PressurePlate()
     pressurePlateMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PressurePlateMesh"));
     pressurePlateMesh->SetupAttachment(RootComponent);
 
+    audioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+    audioComponent->SetupAttachment(RootComponent);
+    audioComponent->bAutoActivate = false;  // Don't play the sound automatically
+
+    // Initialize the flag
+    bHasPlayedAudio = false;
+
 }
 
 // Called when the game starts or when spawned
@@ -40,6 +49,11 @@ void ARoom1_Actor_PressurePlate::BeginPlay()
     // Calculate the target lowered position
     targetLocation = initialLocation;
     targetLocation.Z -= loweredHeight;
+
+    if (plateActivatedSound)
+    {
+        audioComponent->SetSound(plateActivatedSound);
+    }
 	
 }
 
@@ -69,6 +83,13 @@ void ARoom1_Actor_PressurePlate::OnOverlapBegin(UPrimitiveComponent* OverlappedC
     if (OtherActor && (OtherActor != this))
     {
         lowering = true;  // Start lowering the plate
+
+        if (!bHasPlayedAudio && audioComponent && plateActivatedSound)
+        {
+            audioComponent->Play();  // Play the sound
+            bHasPlayedAudio = true;  // Prevent it from playing again
+        }
+
         if (targetDoor)
         {
             targetDoor->OpenDoor();  // Open the door
