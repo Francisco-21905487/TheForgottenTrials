@@ -31,10 +31,14 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float rotationSpeed;
 
-	FRotator initialRotation;
+	UPROPERTY(Replicated)
 	bool rotating;
+
+	FRotator initialRotation;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps)const;
 };

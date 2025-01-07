@@ -99,12 +99,6 @@ void ARoom3_Actor_DoorsManager::ResetRoom3()
 
 	//Reset the player to the beginning of the room3
 	ServerResetRoom(interactController);
-
-	/*APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	if (playerController && playerController->GetPawn())
-	{
-		playerController->GetPawn()->SetActorLocation(waypointStartRoom3->GetActorLocation());
-	}*/
 }
 
 void ARoom3_Actor_DoorsManager::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

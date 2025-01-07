@@ -4,8 +4,6 @@
 #include "Room1_Actor_FinalDoor.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Character.h"
-#include "Components/AudioComponent.h"
-#include "Sound/SoundCue.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -25,16 +23,10 @@ ARoom1_Actor_FinalDoor::ARoom1_Actor_FinalDoor()
 	DoorTriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ARoom1_Actor_FinalDoor::OnTriggerBeginOverlap);
 	DoorTriggerBox->OnComponentEndOverlap.AddDynamic(this, &ARoom1_Actor_FinalDoor::OnTriggerEndOverlap);
 
-	audioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
-	audioComponent->SetupAttachment(RootComponent);
-	audioComponent->bAutoActivate = false;
-
 	rotationSpeed = 2.0f;
 	rotating = false;
 
 	bReplicates = true;
-
-	bHasPlayedAudio = false;
 }
 
 // Called when the game starts or when spawned
@@ -43,11 +35,6 @@ void ARoom1_Actor_FinalDoor::BeginPlay()
 	Super::BeginPlay();
 	
 	initialRotation = GetActorRotation();
-
-	if (doorOpenSound)
-	{
-		audioComponent->SetSound(doorOpenSound);
-	}
 }
 
 // Called every frame
@@ -71,11 +58,6 @@ void ARoom1_Actor_FinalDoor::Tick(float DeltaTime)
 void ARoom1_Actor_FinalDoor::OpenDoor()
 {
 	rotating = true;
-	if (!bHasPlayedAudio && audioComponent && doorOpenSound)
-	{
-		audioComponent->Play();
-		bHasPlayedAudio = true;  // Prevent the sound from playing again
-	}
 	targetRotation = initialRotation + FRotator(0.0f, -90.0f, 0.0f);
 }
 

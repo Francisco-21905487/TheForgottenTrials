@@ -36,16 +36,6 @@ private:
     UPROPERTY(EditAnywhere, Category = "Plate Movement")
     float loweringSpeed = 50.0f;
 
-    UPROPERTY(VisibleAnywhere, Category = "Components")
-    UAudioComponent* audioComponent;
-
-    // Sound Cue to play when the plate is activated
-    UPROPERTY(EditAnywhere, Category = "Audio")
-    USoundCue* plateActivatedSound;
-
-    // Prevent the sound from playing multiple times
-    bool bHasPlayedAudio;
-
     UFUNCTION()
     void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
@@ -53,7 +43,6 @@ private:
     FVector targetLocation;
 
     bool lowering = false;
-
 
 protected:
 	// Called when the game starts or when spawned
