@@ -3,7 +3,6 @@
 
 #include "Room2_Actor_Finaldoor.h"
 #include "Components/StaticMeshComponent.h"
-#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ARoom2_Actor_Finaldoor::ARoom2_Actor_Finaldoor()
@@ -13,13 +12,10 @@ ARoom2_Actor_Finaldoor::ARoom2_Actor_Finaldoor()
 
 	doorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
 	RootComponent = doorMesh;
-	doorMesh->SetIsReplicated(true);
 
     targetRotation = FRotator(0.0f, 90.0f, 0.0f); // Example: Rotate 90 degrees on the Yaw axis
     rotationSpeed = 2.0f; // Adjust rotation speed as needed
     rotating = false;
-
-	bReplicates = true;
 }
 
 // Called when the game starts or when spawned
@@ -50,6 +46,7 @@ void ARoom2_Actor_Finaldoor::Tick(float DeltaTime)
 			rotating = false;
 		}
 	}
+
 }
 
 void ARoom2_Actor_Finaldoor::OpenDoor()
@@ -61,11 +58,4 @@ void ARoom2_Actor_Finaldoor::OpenDoor()
 	{
 		targetRotation = initialRotation + FRotator(0.0f, 90.0f, 0.0f); // Open door
 	}
-}
-
-void ARoom2_Actor_Finaldoor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(ARoom2_Actor_Finaldoor, rotating);
 }

@@ -4,7 +4,6 @@
 #include "WinTrigger.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "TheForgottenTrialsPlayerController.h"
 
 // Sets default values
 AWinTrigger::AWinTrigger()
@@ -26,7 +25,7 @@ AWinTrigger::AWinTrigger()
     TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &AWinTrigger::OnOverlapBegin);
 
     // Default win menu level name
-    winmenu = "WinMenu";
+    winmenu = "WinMenu";  // Replace with the actual name of your win menu level
 
 }
 
@@ -37,33 +36,26 @@ void AWinTrigger::BeginPlay()
 	
 }
 
-// Called every frame
-void AWinTrigger::Tick(float DeltaTime)
-{
-    Super::Tick(DeltaTime);
-
-}
-
-void AWinTrigger::ServerOpenWinMenu_Implementation(APlayerController* InteractingController)
-{
-    if (InteractingController)
-    {
-        ATheForgottenTrialsPlayerController* myPlayerController = Cast<ATheForgottenTrialsPlayerController>(InteractingController);
-        if (myPlayerController)
-        {
-            myPlayerController->ClientOpenWinMenu(winmenu);
-        }
-    }
-}
-
-void AWinTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AWinTrigger::OnOverlapBegin(
+    UPrimitiveComponent* OverlappedComponent,
+    AActor* OtherActor,
+    UPrimitiveComponent* OtherComp,
+    int32 OtherBodyIndex,
+    bool bFromSweep,
+    const FHitResult& SweepResult
+)
 {
     if (OtherActor && OtherActor->IsA(APawn::StaticClass()))
     {
-        AController* playerController = OtherActor->GetInstigatorController();
-        if (!playerController) return;
-
-        APlayerController* overlappingPlayerController = Cast<APlayerController>(playerController);
-        ServerOpenWinMenu(overlappingPlayerController);
+        // Load the win menu level
+        UGameplayStatics::OpenLevel(this, winmenu);
     }
 }
+
+// Called every frame
+void AWinTrigger::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+}
+

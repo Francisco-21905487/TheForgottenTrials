@@ -22,9 +22,6 @@ class THEFORGOTTENTRIALS_API ATheForgottenTrialsPlayerController : public APlaye
 
 		UFUNCTION(Client, Reliable)
 		void ClientResetRoom3(FVector waypointStartRoom3);
-
-		UFUNCTION(Client, Reliable)
-		void ClientOpenWinMenu(FName winmenu);
 	
 	protected:
 		virtual void BeginPlay() override;

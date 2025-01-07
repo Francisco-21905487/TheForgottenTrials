@@ -11,10 +11,11 @@ AFinalRoomLogic::AFinalRoomLogic()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-    EthanVote = "";
-    IsabelVote = "";
+	EthanVotes = 0;
+	IsabelVotes = 0;
     EthanDoor = nullptr;
     IsabelDoor = nullptr;
+
 }
 
 // Called when the game starts or when spawned
@@ -31,19 +32,19 @@ void AFinalRoomLogic::Tick(float DeltaTime)
 
 }
 
-void AFinalRoomLogic::RegisterVote(FString Character, FString VoteFor)
+void AFinalRoomLogic::RegisterVote(FString VoteFor)
 {
-    if (Character == "Ethan_C_0")
+    if (VoteFor == "Isabel")
     {
-        EthanVote = VoteFor;
+        IsabelVotes++;
     }
-    else if (Character == "Isabel_C_0")
+    else if (VoteFor == "Ethan")
     {
-        IsabelVote = VoteFor;
+        EthanVotes++;
     }
 
     // Check if both votes have been cast
-    if (!EthanVote.IsEmpty() && !IsabelVote.IsEmpty())
+    if (EthanVotes + IsabelVotes == 2)
     {
         DetermineOutcome();
     }
@@ -51,34 +52,33 @@ void AFinalRoomLogic::RegisterVote(FString Character, FString VoteFor)
 
 void AFinalRoomLogic::DetermineOutcome()
 {
-    if (EthanVote == "Ethan" && IsabelVote == "Isabel")
+    if (EthanVotes == 1 && IsabelVotes == 1)
     {
-        // Neither door opens
-		//Open the lose menu for both players here
-    }
-    else if (EthanVote == "Isabel" && IsabelVote == "Ethan")
-    {
-        // Both doors open
         if (EthanDoor) EthanDoor->OpenDoor();
         if (IsabelDoor) IsabelDoor->OpenDoor();
+        //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Both live!"));
     }
-    else if (EthanVote == "Ethan" && IsabelVote == "Ethan")
+    else if (EthanVotes == 2)
     {
-        // Ethan's door opens
-        if (EthanDoor) EthanDoor->OpenDoor();
-
-        //Open the lose menu for Isabel player here
+        if (EthanDoor)
+        {
+            //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Calling OpenDoor() on EthanDoor."));
+            EthanDoor->OpenDoor();
+        }
+        else
+        {
+            GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("EthanDoor is null!"));
+        }
     }
-    else if (EthanVote == "Isabel" && IsabelVote == "Isabel")
+    else if (IsabelVotes == 2)
     {
-        // Isabel's door opens
+        //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Isabel lives!"));
         if (IsabelDoor) IsabelDoor->OpenDoor();
-
-        //Open the lose menu for Ethan player here
+        //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Isabel lives!"));
     }
     else
     {
-        GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Unexpected vote combination."));
+        GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Both die! No doors open."));
     }
 }
 

@@ -17,7 +17,7 @@ public:
 	AFinalRoomLogic();
 
 	UFUNCTION(BlueprintCallable, Category = "Voting")
-	void RegisterVote(FString Character, FString VoteFor);
+	void RegisterVote(FString VoteFor);
 
 protected:
 	// Called when the game starts or when spawned
@@ -32,8 +32,8 @@ private:
 	void DetermineOutcome();
 
 	// Voting tally
-	FString EthanVote;
-	FString IsabelVote;
+	int32 EthanVotes;
+	int32 IsabelVotes;
 
 	UPROPERTY(EditAnywhere, Category = "Doors")
 	ARoom4_Actor_FinalDoor* EthanDoor;

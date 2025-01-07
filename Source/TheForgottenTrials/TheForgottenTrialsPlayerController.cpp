@@ -5,7 +5,6 @@
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
 #include "Blueprint/UserWidget.h"
-#include <Kismet/GameplayStatics.h>
 
 void ATheForgottenTrialsPlayerController::BeginPlay()
 {
@@ -51,10 +50,3 @@ void ATheForgottenTrialsPlayerController::ClientResetRoom3_Implementation(FVecto
     }
 }
 
-void ATheForgottenTrialsPlayerController::ClientOpenWinMenu_Implementation(FName winmenu)
-{
-    if (IsLocalController())
-    {
-        UGameplayStatics::OpenLevel(this, winmenu);
-    }
-}

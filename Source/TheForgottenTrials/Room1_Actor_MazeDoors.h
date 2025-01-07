@@ -31,14 +31,18 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float rotationSpeed;
 
-	UPROPERTY(Replicated)
-	bool rotating;
+	UPROPERTY(EditAnywhere, Category = "Components")
+	class UAudioComponent* audioComponent;
+
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	class USoundCue* doorOpenSound;
 
 	FRotator initialRotation;
+	bool rotating;
+
+	bool bHasPlayedAudio;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps)const;
 };
