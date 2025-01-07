@@ -3,8 +3,7 @@
 
 #include "Room1_Actor_MazeDoors.h"
 #include "Components/StaticMeshComponent.h"
-#include "Components/AudioComponent.h"
-#include "Sound/SoundCue.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ARoom1_Actor_MazeDoors::ARoom1_Actor_MazeDoors()
@@ -14,17 +13,13 @@ ARoom1_Actor_MazeDoors::ARoom1_Actor_MazeDoors()
 
 	doorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
 	RootComponent = doorMesh;
+	doorMesh->SetIsReplicated(true);
 
     targetRotation = FRotator(0.0f, 90.0f, 0.0f); // Example: Rotate 90 degrees on the Yaw axis
     rotationSpeed = 2.0f; // Adjust rotation speed as needed
     rotating = false;
 
-	audioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
-	audioComponent->SetupAttachment(RootComponent);
-	audioComponent->bAutoActivate = false;
-
-	bHasPlayedAudio = false;
-
+	bReplicates = true;
 }
 
 // Called when the game starts or when spawned
@@ -33,11 +28,6 @@ void ARoom1_Actor_MazeDoors::BeginPlay()
 	Super::BeginPlay();
 
     initialRotation = GetActorRotation();
-
-	if (doorOpenSound)
-	{
-		audioComponent->SetSound(doorOpenSound);
-	}
 }
 
 // Called every frame
@@ -63,15 +53,16 @@ void ARoom1_Actor_MazeDoors::OpenDoor()
 {
 	rotating = true;
 
-	if (!bHasPlayedAudio && audioComponent && doorOpenSound)
-	{
-		audioComponent->Play();
-		bHasPlayedAudio = true;
-	}
-
 	// Toggle between opening and closing
 	if (GetActorRotation().Equals(initialRotation, 1.0f))
 	{
 		targetRotation = initialRotation + FRotator(0.0f, 90.0f, 0.0f); // Open door
 	}
+}
+
+void ARoom1_Actor_MazeDoors::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ARoom1_Actor_MazeDoors, rotating);
 }

@@ -5,8 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
-#include "Components/AudioComponent.h"
-#include "Sound/SoundCue.h"
 #include "Room1_Actor_FinalDoor.generated.h"
 
 UCLASS()
@@ -49,16 +47,6 @@ private:
 
 	UPROPERTY(Replicated)
 	bool rotating;
-
-	UPROPERTY(VisibleAnywhere, Category = "Components")
-	UAudioComponent* audioComponent;
-
-	// Sound Cue to play when the plate is activated
-	UPROPERTY(EditAnywhere, Category = "Audio")
-	USoundCue* doorOpenSound;
-
-	// Prevent the sound from playing multiple times
-	bool bHasPlayedAudio;
 
 	UFUNCTION()
 	void OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

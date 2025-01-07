@@ -44,13 +44,42 @@ private:
     UPROPERTY(VisibleAnywhere)
     class UStaticMeshComponent* ButtonMesh;
 
-    // Track if player is in range
+	UPROPERTY(EditAnywhere, Category = "Other Button")
+	ARoom4_VotingButton* otherButton;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float targetYPosition = 0;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float inicialPosition = 0;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float moveSpeed = 0;
+	
+	UPROPERTY(Replicated)
+	bool moving = false;
+
+	UPROPERTY(Replicated)
+	bool alreadyVoted;
+
     bool bPlayerInRange;
+
+	FVector initialLocation;
+	FVector targetLocation;
+	
+	FString characterName;
+
+	void MoveButton(float DeltaTime);
+
+	void EthanButtons(FString character);
+	void IsabelButtons(FString character);
+
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 
 	UFUNCTION()
 	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
 	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
+	
 };
