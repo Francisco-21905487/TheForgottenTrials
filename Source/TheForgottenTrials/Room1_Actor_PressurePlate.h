@@ -11,11 +11,11 @@ class ARoom1_Actor_MazeDoors;
 UCLASS()
 class THEFORGOTTENTRIALS_API ARoom1_Actor_PressurePlate : public AActor
 {
-	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	ARoom1_Actor_PressurePlate();
+    GENERATED_BODY()
+
+public:
+    // Sets default values for this actor's properties
+    ARoom1_Actor_PressurePlate();
 
     // Called every frame
     virtual void Tick(float DeltaTime) override;
@@ -36,15 +36,23 @@ private:
     UPROPERTY(EditAnywhere, Category = "Plate Movement")
     float loweringSpeed = 50.0f;
 
+    // Sound asset to play
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    USoundBase* pressurePlateSound;
+
     UFUNCTION()
     void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+    // Function to play the sound
+    void Play2DSound();
 
     FVector initialLocation;
     FVector targetLocation;
 
     bool lowering = false;
 
+
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
 };

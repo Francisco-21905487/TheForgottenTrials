@@ -35,9 +35,14 @@ class THEFORGOTTENTRIALS_API ARoom3_Actor_Door : public AActor, public IInteract
 		// Called when the game starts or when spawned
 		virtual void BeginPlay() override;
 
+		void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
+
 		void MoveDoor(float DeltaTime, FRotator targetPosition);
 
 		void OpenDoor();
+
+		// Function to play the sound
+		void Play2DSound();
 
 		UPROPERTY(EditAnywhere, Category = "Doors")
 		ARoom3_Actor_DoorsManager* doorsManager;
@@ -45,10 +50,15 @@ class THEFORGOTTENTRIALS_API ARoom3_Actor_Door : public AActor, public IInteract
 		UPROPERTY(EditAnywhere, Category = "Movement")
 		FRotator targetRotation;
 
+		// Sound asset to play
+		UPROPERTY(EditAnywhere, Category = "Sound")
+		USoundBase* doorSound;
+
 		UPROPERTY(EditAnywhere, Category = "Movement")
 		float rotationSpeed;
 
 		FRotator initialRotation;
 
+		UPROPERTY(Replicated)
 		bool opening;
 };

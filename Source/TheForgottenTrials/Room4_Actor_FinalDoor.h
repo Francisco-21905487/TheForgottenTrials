@@ -22,6 +22,13 @@ class THEFORGOTTENTRIALS_API ARoom4_Actor_FinalDoor : public AActor
 		void OpenDoor();
 
 	private:
+		// Function to play the sound
+		void Play2DSound();
+
+		// Sound asset to play
+		UPROPERTY(EditAnywhere, Category = "Sound")
+		USoundBase* doorSound;
+
 		UPROPERTY(VisibleAnywhere, Category = "Components")
 		UStaticMeshComponent* doorMesh;
 
@@ -31,11 +38,14 @@ class THEFORGOTTENTRIALS_API ARoom4_Actor_FinalDoor : public AActor
 		UPROPERTY(EditAnywhere, Category = "Movement")
 		float rotationSpeed;
 
-		FRotator initialRotation;
+		UPROPERTY(Replicated)
 		bool rotating;
+
+		FRotator initialRotation;
 
 	protected:
 		// Called when the game starts or when spawned
 		virtual void BeginPlay() override;
 
+		void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps)const;
 };

@@ -84,7 +84,7 @@ void ATheForgottenTrialsCharacter::SetupPlayerInputComponent(UInputComponent* Pl
 		EnhancedInputComponent->BindAction(Cheat2Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat2);
 		EnhancedInputComponent->BindAction(Cheat3Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat3);
 		EnhancedInputComponent->BindAction(Cheat4Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat4);
-    EnhancedInputComponent->BindAction(Cheat5Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat5);
+		EnhancedInputComponent->BindAction(Cheat5Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat5);
 		EnhancedInputComponent->BindAction(Cheat6Action, ETriggerEvent::Started, this, &ATheForgottenTrialsCharacter::ActivateCheat6);
 
 
@@ -147,7 +147,6 @@ void ATheForgottenTrialsCharacter::Server_Interact_Implementation(AActor* ActorT
 }
 
 //cheats Functions
-
 void ATheForgottenTrialsCharacter::ActivateCheat1()
 {
 	actorCheatManager->CompleteRoom1();

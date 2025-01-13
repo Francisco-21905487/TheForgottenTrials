@@ -24,6 +24,7 @@ public:
 
 	virtual void Interact() override;
 
+
 private:
 	// Box component to detect player proximity
 	UPROPERTY(VisibleAnywhere)
@@ -37,6 +38,25 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Door")
 	ARoom1_Actor_FinalDoor* targetFinalDoor;
 
+	// Sound asset to play
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundBase* buttonSound;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float targetXPosition = 0;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float inicialPosition = 0;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float moveSpeed = 0;
+
+	UPROPERTY(EditAnywhere)
+	bool yAxis = false;
+
+	UPROPERTY(Replicated)
+	bool moving = false;
+
 	// Function to handle overlap begin
 	UFUNCTION()
 	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -45,10 +65,18 @@ private:
 	UFUNCTION()
 	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	void MoveButton(float DeltaTime);
+
+	// Function to play the sound
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_Play2DSound();
+
 	// Flag to check if player is in range
 	bool playerInRange;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps)const;
 };

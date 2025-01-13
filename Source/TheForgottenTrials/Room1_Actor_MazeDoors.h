@@ -25,16 +25,27 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UStaticMeshComponent* doorMesh;
 
+	// Sound asset to play
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundBase* doorSound;
+
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	FRotator targetRotation;
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float rotationSpeed;
 
-	FRotator initialRotation;
+	UPROPERTY(Replicated)
 	bool rotating;
+
+	FRotator initialRotation;
+
+	// Function to play the sound
+	void Play2DSound();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps)const;
 };

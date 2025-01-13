@@ -4,6 +4,7 @@
 #include "Room1_Actor_FinalDoor.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -58,6 +59,9 @@ void ARoom1_Actor_FinalDoor::Tick(float DeltaTime)
 void ARoom1_Actor_FinalDoor::OpenDoor()
 {
 	rotating = true;
+
+	Multicast_Play2DSound();
+
 	targetRotation = initialRotation + FRotator(0.0f, -90.0f, 0.0f);
 }
 
@@ -66,7 +70,18 @@ void ARoom1_Actor_FinalDoor::CloseDoor()
 	//if (rotating) return;
 
 	rotating = true;
+
+	Multicast_Play2DSound();
+
 	targetRotation = initialRotation;
+}
+
+void ARoom1_Actor_FinalDoor::Multicast_Play2DSound_Implementation()
+{
+	if (doorSound)
+	{
+		UGameplayStatics::PlaySound2D(this, doorSound, 2.0f /*Volume*/, 1.0f /*Pitch*/, 0.8f /*StartTime*/);
+	}
 }
 
 void ARoom1_Actor_FinalDoor::OnTriggerBeginOverlap(UPrimitiveComponent * OverlappedComp, AActor * OtherActor,UPrimitiveComponent * OtherComp, int32 OtherBodyIndex,bool bFromSweep, const FHitResult & SweepResult)
@@ -84,7 +99,6 @@ void ARoom1_Actor_FinalDoor::OnTriggerEndOverlap(UPrimitiveComponent * Overlappe
 	if (OtherActor && OtherActor->IsA(ACharacter::StaticClass()))
 	{
 		CloseDoor();
-		
 	}
 }
 
@@ -94,4 +108,3 @@ void ARoom1_Actor_FinalDoor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 
 	DOREPLIFETIME(ARoom1_Actor_FinalDoor, rotating);
 }
-

@@ -3,6 +3,7 @@
 
 #include "Room3_Actor_SymbolsManager.h"
 #include "Room3_Actor_DoorsManager.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ARoom3_Actor_SymbolsManager::ARoom3_Actor_SymbolsManager()
@@ -10,6 +11,8 @@ ARoom3_Actor_SymbolsManager::ARoom3_Actor_SymbolsManager()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	bReplicates = true;
+	bAlwaysRelevant = true;
 }
 
 // Called when the game starts or when spawned
@@ -37,12 +40,17 @@ void ARoom3_Actor_SymbolsManager::SetCorrectSymbols()
         {
             if (doorsManager->correctDoors[i]->symbolActor->GetName() == symbols[j]->GetName())
             {
-                symbols[j]->correctSymbol = true;
-                correctSymbolSequence.Add(symbols[j]);
+				Multicast_SetCorrectSymbols(j);
 				break;
 			}
         }
     }
+}
+
+void ARoom3_Actor_SymbolsManager::Multicast_SetCorrectSymbols_Implementation(int j)
+{
+	symbols[j]->correctSymbol = true;
+	correctSymbolSequence.Add(symbols[j]);
 }
 
 void ARoom3_Actor_SymbolsManager::CheckSequenceOfSymbols(ARoom3_Actor_Symbols* interactedSymbol)
@@ -67,6 +75,7 @@ void ARoom3_Actor_SymbolsManager::CheckSequenceOfSymbols(ARoom3_Actor_Symbols* i
 		}
 
 		interactedSymbol->resetMovement = true;
+		interactedSymbol->Server_Play2DSound(interactedSymbol->interactController);
 		currentSequenceIndex = 0;
 		//If we want to add some user feedback put it here
 	}

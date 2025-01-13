@@ -4,6 +4,7 @@
 #include "FinalRoomLogic.h"
 #include "Room1_Actor_MazeDoors.h"
 #include "Kismet/GameplayStatics.h"
+#include "TheForgottenTrialsPlayerController.h"
 
 // Sets default values
 AFinalRoomLogic::AFinalRoomLogic()
@@ -11,11 +12,10 @@ AFinalRoomLogic::AFinalRoomLogic()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	EthanVotes = 0;
-	IsabelVotes = 0;
+    EthanVote = "";
+    IsabelVote = "";
     EthanDoor = nullptr;
     IsabelDoor = nullptr;
-
 }
 
 // Called when the game starts or when spawned
@@ -32,19 +32,19 @@ void AFinalRoomLogic::Tick(float DeltaTime)
 
 }
 
-void AFinalRoomLogic::RegisterVote(FString VoteFor)
+void AFinalRoomLogic::RegisterVote(FString Character, FString VoteFor)
 {
-    if (VoteFor == "Isabel")
+    if (Character == "Ethan_C_0")
     {
-        IsabelVotes++;
+        EthanVote = VoteFor;
     }
-    else if (VoteFor == "Ethan")
+    else if (Character == "Isabel_C_0")
     {
-        EthanVotes++;
+        IsabelVote = VoteFor;
     }
 
     // Check if both votes have been cast
-    if (EthanVotes + IsabelVotes == 2)
+    if (!EthanVote.IsEmpty() && !IsabelVote.IsEmpty())
     {
         DetermineOutcome();
     }
@@ -52,33 +52,87 @@ void AFinalRoomLogic::RegisterVote(FString VoteFor)
 
 void AFinalRoomLogic::DetermineOutcome()
 {
-    if (EthanVotes == 1 && IsabelVotes == 1)
+    if (EthanVote == "Ethan" && IsabelVote == "Isabel")
     {
+        // Neither door opens
+		//Open the lose menu for both players here
+		TArray<AActor*> FoundActors;
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerController::StaticClass(), FoundActors);
+
+        for (AActor* Actor : FoundActors)
+        {
+            APlayerController* PlayerController = Cast<APlayerController>(Actor);
+            if (PlayerController)
+            {
+                ATheForgottenTrialsPlayerController* myPlayerController = Cast<ATheForgottenTrialsPlayerController>(PlayerController);
+                if (myPlayerController)
+                {
+                    myPlayerController->ClientOpenUI(loseWidgetClass);
+                }
+            }
+        }
+    }
+    else if (EthanVote == "Isabel" && IsabelVote == "Ethan")
+    {
+        // Both doors open
         if (EthanDoor) EthanDoor->OpenDoor();
         if (IsabelDoor) IsabelDoor->OpenDoor();
-        //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Both live!"));
     }
-    else if (EthanVotes == 2)
+    else if (EthanVote == "Ethan" && IsabelVote == "Ethan")
     {
-        if (EthanDoor)
+        // Ethan's door opens
+        if (EthanDoor) EthanDoor->OpenDoor();
+
+        //Open the lose menu for Isabel player here
+        TArray<AActor*> FoundActors;
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerController::StaticClass(), FoundActors);
+
+        for (AActor* Actor : FoundActors)
         {
-            //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Calling OpenDoor() on EthanDoor."));
-            EthanDoor->OpenDoor();
-        }
-        else
-        {
-            GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("EthanDoor is null!"));
+            APlayerController* PlayerController = Cast<APlayerController>(Actor);
+            if (PlayerController)
+            {
+                APawn* ControlledPawn = PlayerController->GetPawn();
+                if (ControlledPawn && ControlledPawn->GetName().Contains("Isabel"))
+                {
+                    ATheForgottenTrialsPlayerController* myPlayerController = Cast<ATheForgottenTrialsPlayerController>(PlayerController);
+                    if (myPlayerController)
+                    {
+                        myPlayerController->ClientOpenUI(loseWidgetClass);
+                    }
+                }
+            }
         }
     }
-    else if (IsabelVotes == 2)
+    else if (EthanVote == "Isabel" && IsabelVote == "Isabel")
     {
-        //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Isabel lives!"));
+        // Isabel's door opens
         if (IsabelDoor) IsabelDoor->OpenDoor();
-        //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Isabel lives!"));
+
+        //Open the lose menu for Ethan player here
+        TArray<AActor*> FoundActors;
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerController::StaticClass(), FoundActors);
+
+        for (AActor* Actor : FoundActors)
+        {
+            APlayerController* PlayerController = Cast<APlayerController>(Actor);
+            if (PlayerController)
+            {
+                APawn* ControlledPawn = PlayerController->GetPawn();
+                if (ControlledPawn && ControlledPawn->GetName().Contains("Ethan"))
+                {
+                    ATheForgottenTrialsPlayerController* myPlayerController = Cast<ATheForgottenTrialsPlayerController>(PlayerController);
+                    if (myPlayerController)
+                    {
+                        myPlayerController->ClientOpenUI(loseWidgetClass);
+                    }
+                }
+            }
+        }
     }
     else
     {
-        GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Both die! No doors open."));
+        GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Unexpected vote combination."));
     }
 }
 

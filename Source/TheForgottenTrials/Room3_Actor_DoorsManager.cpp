@@ -3,8 +3,11 @@
 #pragma once
 
 #include "Room3_Actor_DoorsManager.h"
+#include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerController.h"
+#include "Net/UnrealNetwork.h"
+#include "TheForgottenTrialsPlayerController.h"
 
 // Sets default values
 ARoom3_Actor_DoorsManager::ARoom3_Actor_DoorsManager()
@@ -12,6 +15,14 @@ ARoom3_Actor_DoorsManager::ARoom3_Actor_DoorsManager()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Initialize the ProximityBox
+	proximityBox = CreateDefaultSubobject<UBoxComponent>(TEXT("ProximityBox"));
+	proximityBox->SetupAttachment(RootComponent);
+	proximityBox->SetBoxExtent(FVector(100.f, 100.f, 100.f));
+	proximityBox->OnComponentBeginOverlap.AddDynamic(this, &ARoom3_Actor_DoorsManager::OnOverlapBegin);
+
+	bReplicates = true;
+	bAlwaysRelevant = true;
 }
 
 // Called when the game starts or when spawned
@@ -31,31 +42,32 @@ void ARoom3_Actor_DoorsManager::Tick(float DeltaTime)
 void ARoom3_Actor_DoorsManager::SelectCorrectDoor()
 {
 	// Choose a random door to be the correct one
-	// First sequence of doors
-	int correctDoorIndex = FMath::RandRange(0, 1);
-	doors[correctDoorIndex]->correctDoor = true;
-	correctDoors[0] = doors[correctDoorIndex];
-	arrowsManager->SetArrowRotation(0, correctDoorIndex);
-
-	// Second sequence of doors
-	correctDoorIndex = FMath::RandRange(2, 3);
-	doors[correctDoorIndex]->correctDoor = true;
-	correctDoors[1] = doors[correctDoorIndex];
-	arrowsManager->SetArrowRotation(1, correctDoorIndex);
-
-	// Third sequence of doors
-	correctDoorIndex = FMath::RandRange(4, 5);
-	doors[correctDoorIndex]->correctDoor = true;
-	correctDoors[2] = doors[correctDoorIndex];
-	arrowsManager->SetArrowRotation(2, correctDoorIndex);
-
-	// Fourth sequence of doors
-	correctDoorIndex = FMath::RandRange(6, 7);
-	doors[correctDoorIndex]->correctDoor = true;
-	correctDoors[3] = doors[correctDoorIndex];
-	arrowsManager->SetArrowRotation(3, correctDoorIndex);
+	for (int i = 0; i < 4; i++)
+	{
+		int correctDoorIndex = FMath::RandRange(i * 2, i * 2 + 1);
+		MulticastSelectCorrectDoor(correctDoorIndex, i);
+	}
 
 	symbolsManager->SetCorrectSymbols();
+}
+
+void ARoom3_Actor_DoorsManager::MulticastSelectCorrectDoor_Implementation(int correctDoorIndex, int i)
+{
+	doors[correctDoorIndex]->correctDoor = true;
+	correctDoors[i] = doors[correctDoorIndex];
+	arrowsManager->SetArrowRotation(i, correctDoorIndex);
+}
+
+void ARoom3_Actor_DoorsManager::ServerResetRoom_Implementation(APlayerController* InteractingController)
+{
+	if (InteractingController)
+	{
+		ATheForgottenTrialsPlayerController* myPlayerController = Cast<ATheForgottenTrialsPlayerController>(InteractingController);
+		if (myPlayerController)
+		{
+			myPlayerController->ClientResetRoom3(waypointStartRoom3->GetActorLocation());
+		}
+	}
 }
 
 void ARoom3_Actor_DoorsManager::ResetRoom3()
@@ -86,9 +98,24 @@ void ARoom3_Actor_DoorsManager::ResetRoom3()
 	SelectCorrectDoor();
 
 	//Reset the player to the beginning of the room3
-	APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	ServerResetRoom(interactController);
+
+	/*APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	if (playerController && playerController->GetPawn())
 	{
 		playerController->GetPawn()->SetActorLocation(waypointStartRoom3->GetActorLocation());
+	}*/
+}
+
+void ARoom3_Actor_DoorsManager::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && (OtherActor != this))
+	{
+		AController* playerController = OtherActor->GetInstigatorController();
+		if (!playerController) return;
+
+		APlayerController* overlappingPlayerController = Cast<APlayerController>(playerController);
+
+		interactController = overlappingPlayerController;
 	}
 }

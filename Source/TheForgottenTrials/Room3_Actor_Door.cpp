@@ -4,6 +4,8 @@
 #include "Room3_Actor_Door.h"
 #include "Room3_Actor_DoorsManager.h"
 #include "Components/StaticMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ARoom3_Actor_Door::ARoom3_Actor_Door()
@@ -11,6 +13,7 @@ ARoom3_Actor_Door::ARoom3_Actor_Door()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	bReplicates = true;
 }
 
 // Called when the game starts or when spawned
@@ -54,6 +57,8 @@ void ARoom3_Actor_Door::OpenDoor()
 {
 	opening = true;
 
+	Play2DSound();
+
 	// Toggle between opening and closing
 	if (GetActorRotation().Equals(initialRotation, 1.0f))
 	{
@@ -81,4 +86,19 @@ void ARoom3_Actor_Door::Interact()
 
 		//If we want to add some user feedback put it here
 	}
+}
+
+void ARoom3_Actor_Door::Play2DSound()
+{
+	if (doorSound)
+	{
+		UGameplayStatics::PlaySound2D(this, doorSound, 2.0f /*Volume*/, 1.0f /*Pitch*/, 0.8f /*StartTime*/);
+	}
+}
+
+void ARoom3_Actor_Door::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ARoom3_Actor_Door, opening);
 }
